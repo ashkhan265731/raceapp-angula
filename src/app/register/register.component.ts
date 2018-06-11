@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from "rxjs/Rx";
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,10 +13,14 @@ import { Location } from '@angular/common';
 })
 export class RegisterComponent implements OnInit {
   serviceUrl = environment.serviceUrl;
-  user: any = {};
+  user: any = {
+    user_type: 'select',
+    state: 'select'
+  };
   filesToUpload: Array<File> = [];
   selectedTab = 0;
-  verifyEmail:any = false;
+  verifyEmail: any = false;
+  validatePhoneumber: any = false;
 
   states = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
@@ -27,6 +31,9 @@ export class RegisterComponent implements OnInit {
     'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
     'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
   ];
+  @ViewChild('phone1') phone1: ElementRef;
+  @ViewChild('phone2') phone2: ElementRef;
+  @ViewChild('phone3') phone3: ElementRef;
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -37,18 +44,53 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
   }
-  checkEmailDuplication(email){
-    var _this = this;
-    var data = email.model; 
-    // console.log(email.model);
-    var response = this.http.post(this.serviceUrl+"/checkduplicates", {"data":data})
-      .subscribe(function (res) {
-      if(res){
-        _this.verifyEmail = true;
-      }else{
-        _this.verifyEmail = false;
+
+  validatePhone() {
+    if (this.user.phone1) {
+      if (this.user.phone1 && this.user.phone1.toString().length > 2) {
+        this.phone2.nativeElement.focus();
+
+        if (this.user.phone2) {
+          if (this.user.phone2 && this.user.phone2.toString().length > 2) {
+            this.phone3.nativeElement.focus();
+
+            if (this.user.phone3) {
+              if (this.user.phone1.toString().length > 2 && this.user.phone2.toString().length > 2 && this.user.phone3.toString().length > 3) {
+                this.phone3.nativeElement.blur();
+              }
+            }
+
+          }
+        }
+
       }
-    });
+      //   if (this.user.phone1 && this.user.phone2 && this.user.phone3) {
+      //   var validatePhone = this.user.phone1.toString().length + this.user.phone2.toString().length + this.user.phone3.toString().length;
+      //   if (validatePhone < 10) {
+      //     this.validatePhoneumber = true;
+      //   } else {
+      //     this.validatePhoneumber = true;
+      //   }
+      // }
+    }
+
+
+    console.log();
+
+  }
+
+  checkEmailDuplication(email) {
+    var _this = this;
+    var data = email.model;
+    // console.log(email.model);
+    var response = this.http.post(this.serviceUrl + "/checkduplicates", { "data": data })
+      .subscribe(function (res) {
+        if (res) {
+          _this.verifyEmail = true;
+        } else {
+          _this.verifyEmail = false;
+        }
+      });
 
   }
 
@@ -57,32 +99,35 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    this.user  = JSON.stringify(this.user);
+    this.user.phone = this.user.phone1+""+this.user.phone2+""+this.user.phone3;
+    this.user = JSON.stringify(this.user);
+    console.log(this.user);
     const formData: any = new FormData();
     const files: Array<File> = this.filesToUpload;
-if(files.length>0){
-  formData.append("uploads[]", files[0], files[0]['name']);
-}
-else{
- 
-}
+    if (files.length > 0) {
+      formData.append("uploads[]", files[0], files[0]['name']);
+    }
+    else {
+
+    }
 
     //formData.append("uploads[]", files[0], files[0]['name']);
-    formData.append("user",this.user)
-
-  var response = this.http.post(this.serviceUrl+"/registeruser", formData)
+    formData.append("user", this.user)
+    var response = this.http.post(this.serviceUrl + "/registeruser", formData)
       .subscribe(function (res) {
         console.log(response);
         return res;
+      }, function (err) {
+        console.log(err)
       });
 
     if (response) {
       this.user = {};
       this.router.navigate(["login"]);
-      location.reload();
+      //location.reload();
       this.alertService.success('Registered successfully ', true);
     }
-    else{
+    else {
       this.alertService.error('Something went wrong, Please Contact the administrator !!', true);
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Input } from '@angular/core';
 import { PostFormDataService } from './../../services/post-form-data.service';
 import { environment } from './../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -16,6 +16,9 @@ export class MyeventsComponent implements OnInit {
   myEventsData:any;
   eventsListData:any;
   user_id:any;
+  alertMessage: any = null; 
+
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -38,8 +41,14 @@ export class MyeventsComponent implements OnInit {
       .subscribe(function (response) {
         current.errorLog = false;
         current.myEventsData = response;
-    },function(res){
+    },
+    function (err) {
       current.errorLog = true;
+      current.alertMessage = {
+        type: 'danger',
+        title: 'Something Went wrong. Please Contact Administartor',
+        data: err
+      };
     });
   }
   // getEventsList(){

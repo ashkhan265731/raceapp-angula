@@ -30,3 +30,12 @@
     text-align: center;
     vertical-align: middle;
 }
+
+.phone-field input{
+    display: inline;
+    width: 17%;
+  }
+  .phone-field label{
+      display: block !important;
+      width: 100%;
+  }

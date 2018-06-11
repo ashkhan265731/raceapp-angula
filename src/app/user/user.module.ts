@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { UserRoutingModule } from './user-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { EditUsereventsignupComponent } from './edit-usereventsignup/edit-usereventsignup.component';
 import { FileuploadComponent } from './fileupload/fileupload.component';
 import { FileUploadModule } from 'ng2-file-upload';
 
@@ -16,6 +15,9 @@ import { UsereventsignupComponent } from './usereventsignup/usereventsignup.comp
 import { UserComponent } from './user.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { OrderSummaryComponent } from './order-summary/order-summary.component';
+import { SharedModule } from './../shared/shared.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -24,11 +26,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgbModule,
     UserRoutingModule,
     FileUploadModule,
-
+    SharedModule
   ],
   declarations: [
     DashboardComponent, 
-    EditUsereventsignupComponent, 
     FileuploadComponent, 
     ListeventComponent, 
     MyEventDetailsComponent, 
@@ -36,6 +37,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ProfileEditComponent, 
     ThankYouComponent, 
     UsereventsignupComponent, 
-    UserComponent]
+    UserComponent, OrderSummaryComponent]
 })
 export class UserModule { }
