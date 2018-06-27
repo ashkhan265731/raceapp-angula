@@ -12,3 +12,12 @@ a span{
     color : #646879;
     
 }
+.cur-pointer{
+    cursor: pointer;
+}
+tr th{
+    color : #646879;
+}
+.f-b{
+   font-weight: bold;
+}

@@ -42,7 +42,7 @@ const routes: Routes = [
         path: 'myevents', component: MyeventsComponent, canActivateChild: [AuthGuardChildService]
       },
       {
-        path: 'myeventdetails/:id', component: MyEventDetailsComponent, canActivateChild: [AuthGuardChildService]
+        path: 'myeventdetails/:id/:status', component: MyEventDetailsComponent, canActivateChild: [AuthGuardChildService]
       },
       {
         path: 'ordersummery/:id', component: OrderSummaryComponent, canActivateChild: [AuthGuardChildService]

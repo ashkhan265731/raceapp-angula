@@ -1,75 +1,204 @@
 <div class="content-wraper">
 
-    <div class="container-fluid" style="padding: 0px;">
-      <div class="row">
-        <div class="col-xs-12 col-sm-12">
-  
-          <div class="page-header page-header-default">
-            <div class="page-header-content">
-              <div class="page-title">
-                <h4>
-                  <i class="icon-arrow-left52 position-left"></i>
-                  <span class="text-semibold">Home</span> -My Events List</h4>
-                <a class="heading-elements-toggle">
-                  <i class="icon-more"></i>
-                </a>
-              </div>
-  
-            </div>
-  
-            <div class="breadcrumb-line">
-              <a class="breadcrumb-elements-toggle">
-                <i class="icon-menu-open"></i>
+  <div class="container-fluid" style="padding: 0px;">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12">
+
+        <div class="page-header page-header-default">
+          <div class="page-header-content">
+            <div class="page-title">
+              <h4>
+                <i class="icon-arrow-left52 position-left"></i>
+                <span class="text-semibold">Home</span> -My Events List</h4>
+              <a class="heading-elements-toggle">
+                <i class="icon-more"></i>
               </a>
-              <ul class="breadcrumb">
-                <li>
-                  <a href="index.html">
-                    <i class="icon-home2 position-left"></i> Home</a>
-                </li>
-                <li class="active">My Events List</li>
-              </ul>
-  
-  
             </div>
+
+          </div>
+
+          <div class="breadcrumb-line">
+            <a class="breadcrumb-elements-toggle">
+              <i class="icon-menu-open"></i>
+            </a>
+            <ul class="breadcrumb">
+              <li>
+                <a href="index.html">
+                  <i class="icon-home2 position-left"></i> Home</a>
+              </li>
+              <li class="active">My Events List</li>
+            </ul>
+
+
           </div>
         </div>
       </div>
     </div>
-  
-<div class="container-fluid">
-  <app-alert-message [alertMessage]="alertMessage"></app-alert-message>
+  </div>
 
-  <div class="row">
-    <div class="col-xs-12 col-sm-12">
-      
-      <ul class="list-group">
-          <li class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center">
-              <a class="col-xs-12 col-sm-12 text-dark event-link-heading" >
-            <span class="col-xs-4 col-sm-4 pull-left f-b  ">Event Date</span>
-            <span class="col-xs-4 col-sm-4 f-b" > Event Name</span>
-            <!-- <span class="pull-right right-0"> <i class="fa fa-arrow-circle-right"></i></span> -->
-          <span class="col-xs-4 col-sm-4 pull-right right-0 f-b ">Location</span>    
-          </a>
-          </li>
+  <div class="container-fluid">
+    <app-alert-message [alertMessage]="alertMessage"></app-alert-message>
 
-                    <li class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center" *ngFor="let myevents of myEventsData;let i=$index">
-                        <a class="col-xs-12 col-sm-12 event-link"  [routerLink]="['/user/myeventdetails',myevents._id]">
-                      <span class="col-xs-4 col-sm-4 pull-left  ">{{myevents.event_id.from_date | date: 'dd/MM/yyyy'}} - {{myevents.event_id.to_date | date: 'dd/MM/yyyy'}}</span>
-                      <span class="col-xs-4 col-sm-4 f-b" >{{myevents.event_id.event_name}} </span>
-                      <!-- <span class="pull-right right-0"> <i class="fa fa-arrow-circle-right"></i></span> -->
-                    <span class="col-xs-4 col-sm-4 pull-right right-0  ">{{myevents.event_id.location}}</span>    
-                    </a>
-                    </li>
+    <!-- <div class="card p-2">
+      <div class="card-body row">
+
+        <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Event Date</th>
+                <th scope="col">Event Name</th>
+                <th scope="col">Location</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="cur-pointer" *ngFor="let myevents of myEventsData;let i=$index" [routerLink]="['/user/myeventdetails',myevents._id]">
+                <td scope="row">{{myevents.event_id.from_date | date: 'dd/MM/yyyy'}} - {{myevents.event_id.to_date | date: 'dd/MM/yyyy'}}</td>
+                <td scope="row" class="f-b">{{myevents.event_id.event_name}} </td>
+                <td scope="row" class="">{{myevents.event_id.location}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div> -->
+    <div class="card p-2">
+      <div class="card-body row">
+        <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <nav>
+              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home"
+                  aria-selected="true">On Going</a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile"
+                  aria-selected="false">Upcoming</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact"
+                  aria-selected="false">Expired</a>
                   
-                    <!-- <li class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center" *ngFor="let myevents of myEventsData;let i=$index">
-                        <a class="col-xs-12 col-sm-12 event-link"  [routerLink]="['/user/myeventdetails',myevents._id]">{{myevents.event_id.event_name}}
-                        <span class="pull-right right-0"> <i class="fa fa-arrow-circle-right"></i></span>
-                        </a>
-                    </li> -->
-                  </ul>
-                  <br>
-                  <br>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 table-responsive">
+            <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Event Date</th>
+                      <th scope="col">Event Name</th>
+                      <th scope="col">Location</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let myevents of ongoingEvents;let i=$index"  [routerLink]="['/user/myeventdetails',myevents._id,'ongoing']"
+                      class="cur-pointer">
+      
+                      <td scope="row">{{myevents?.event_id?.from_date | date: 'dd/MM/yyyy'}} - {{myevents?.event_id?.to_date | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{myevents?.event_id?.event_name}}</td>
+                      <td>{{myevents?.event_id?.location}}</td>
+                      <td>
+                        <span>
+                          <div *ngIf="myevents?.event_id?.from_date<currentDate && myevents?.event_id?.to_date>currentDate" class="on-event">On Going</div>
+                          <div *ngIf="myevents?.event_id?.from_date<currentDate && myevents?.event_id?.to_date<currentDate" class="e-event">Expired</div>
+                          <div *ngIf="myevents?.event_id?.from_date>currentDate" class="u-event">Upcoming</div>
+                        </span>
+                      </td>
+                      <td>
+                        <span class="view-btn">View</span>
+                      </td>
+                    
+                      <!-- <td *ngIf="events?.registration_start_date>=currentDate"> event  </td> -->
+      
+                    </tr>
+      
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Event Date</th>
+                      <th scope="col">Event Name</th>
+                      <th scope="col">Location</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let myevents of upcomingEvents;let i=index"  [routerLink]="['/user/myeventdetails',myevents._id,'upcoming']"
+                      class="cur-pointer">
+      
+                      <td scope="row">{{myevents?.event_id?.from_date | date: 'dd/MM/yyyy'}} - {{myevents?.event_id?.to_date | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{myevents?.event_id?.event_name}}</td>
+                      <td>{{myevents?.event_id?.location}}</td>
+                      <td>
+                        <span>
+                          <div *ngIf="myevents?.event_id?.from_date<currentDate && myevents?.event_id?.to_date>currentDate" class="on-event">On Going</div>
+                          <div *ngIf="myevents?.event_id?.from_date<currentDate && myevents?.event_id?.to_date<currentDate" class="e-event">Expired</div>
+                          <div *ngIf="myevents?.event_id?.from_date>currentDate" class="u-event">Upcoming</div>
+                        </span>
+                      </td>
+                      <td >
+                        <span class="view-btn">View</span>
+                      </td>
+                    
+      
+                    </tr>
+      
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Event Date</th>
+                      <th scope="col">Event Name</th>
+                      <th scope="col">Location</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let events of expiredEvents;let i=index" [routerLink]="['/user/myeventdetails',myevents._id,'expired']"
+                      class="cur-pointer">
+      
+                      <td scope="row">{{myevents?.event_id?.from_date | date: 'dd/MM/yyyy'}} - {{myevents?.event_id?.to_date | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{myevents?.event_id?.event_name}}</td>
+                      <td>{{myevents?.event_id?.location}}</td>
+                      <td>
+                        <span>
+                          <div *ngIf="myevents?.event_id?.from_date<currentDate && myevents?.event_id?.to_date>currentDate" class="on-event">On Going</div>
+                          <div *ngIf="myevents?.event_id?.from_date<currentDate && myevents?.event_id?.to_date<currentDate" class="e-event">Expired</div>
+                          <div *ngIf="myevents?.event_id?.from_date>currentDate" class="u-event">Upcoming</div>
+                        </span>
+                      </td>
+                      <td >
+                        <span class="view-btn">View</span>
+                      </td>
+                    
+                      <!-- <td *ngIf="events?.registration_start_date>=currentDate"> event  </td> -->
+      
+                    </tr>
+      
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
     </div>
+
   </div>
+</div>

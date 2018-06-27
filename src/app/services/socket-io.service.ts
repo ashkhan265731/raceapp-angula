@@ -9,6 +9,7 @@ import * as io from 'socket.io-client';
 export class SocketIoService {
 
   private url = 'http://localhost:3000';  
+  // private url = 'https://racebox.herokuapp.com';
   private socket;
   
   sendMessage(message){

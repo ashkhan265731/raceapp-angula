@@ -27,6 +27,7 @@ export class GuestUserPaymentComponent implements OnInit {
   total_fees: any = 0;
   payment_type: any;
   alertMessage: any = null;
+  racetypeList_total:any = 0;
 
 
   constructor(
@@ -54,6 +55,9 @@ export class GuestUserPaymentComponent implements OnInit {
         current.getEventDetails(current.event_id._id);
         current.producer_id = current.singleUserData.producer_id;
         current.getProducerDetails(current.producer_id);
+        current.singleUserData.racetypeList.forEach((el, i) => {
+          current.racetypeList_total = parseInt(current.racetypeList_total)+ parseInt(el.ridetype[1]);
+         });
         current.singleUserData.etimeslots.forEach((el, i) => {
           current.exhibition_total = parseInt(current.exhibition_total) + parseInt(el.exhibitions_entryFee);
           current.exhibition_qty_total = parseInt(current.exhibition_qty_total) + parseInt(el.entryQuantity);
@@ -62,8 +66,8 @@ export class GuestUserPaymentComponent implements OnInit {
           current.warmup_total = parseInt(current.warmup_total) + parseInt(el.warmup_entry_fee);
           current.warmup_qty_total = parseInt(current.warmup_qty_total) + parseInt(el.wentryQuantity);
         });
-        current.total_fees = parseInt(current.exhibition_total) + parseInt(current.warmup_total) + parseInt(current.singleUserData.stalls_price)
-          + parseInt(current.singleUserData.electric_price) + parseInt(current.singleUserData.late_fee) + parseInt(current.singleUserData.office_fee);
+        current.total_fees = parseInt(current.racetypeList_total)+parseInt(current.exhibition_total) + parseInt(current.warmup_total) + parseInt(current.singleUserData.stalls_price)
+          + parseInt(current.singleUserData.electric_price) +parseInt(current.singleUserData.shavings_price) + parseInt(current.singleUserData.late_fee) + parseInt(current.singleUserData.office_fee);
       }, function (err) {
         current.errorLog = true;
         current.alertMessage = {

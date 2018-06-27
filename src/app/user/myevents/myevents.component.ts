@@ -15,8 +15,16 @@ export class MyeventsComponent implements OnInit {
   serviceUrl = environment.serviceUrl;
   myEventsData:any;
   eventsListData:any;
+  listData:any;
   user_id:any;
-  alertMessage: any = null; 
+  currentDate: any;
+  length: any = 100;
+  filter_from: any = Date.parse("1900-01-01T06:00:00.000Z");
+  filter_to: any = Date.parse("2040-01-01T06:00:00.000Z");
+  alertMessage: any = null;
+  ongoingEvents: any = [];
+  upcomingEvents: any = [];
+  expiredEvents: any = []; 
 
 
   constructor(
@@ -27,6 +35,13 @@ export class MyeventsComponent implements OnInit {
     private dataService:DataService
   ) {
     this.dataService.changeMessage("my_event");
+    this.getEventListCount(this.filter_from, this.filter_to);
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    this.currentDate = Date.parse(new Date().toString());
    }
 
   ngOnInit() {
@@ -41,6 +56,26 @@ export class MyeventsComponent implements OnInit {
       .subscribe(function (response) {
         current.errorLog = false;
         current.myEventsData = response;
+        console.log(current.myEventsData);
+        
+
+        current.myEventsData.forEach(el => {
+          console.log(current.currentDate)
+          if (el.event_id.from_date < current.currentDate && el.event_id.to_date > current.currentDate) {
+            console.log("on going events");
+            current.ongoingEvents.push(el);
+          }
+          else if (el.event_id.from_date < current.currentDate && el.event_id.to_date < current.currentDate) {
+            console.log("expired events");
+            current.expiredEvents.push(el);
+          } else if (el.event_id.from_date > current.currentDate) {
+            console.log("upcoming events");
+            current.upcomingEvents.push(el);
+          } else {
+            console.log("empty")
+          }
+        });
+
     },
     function (err) {
       current.errorLog = true;
@@ -60,5 +95,23 @@ export class MyeventsComponent implements OnInit {
   //   });
   // }
 
+  getEventListCount(filter_from, filter_to) {
+    var current = this;
+    //this.http.get("http://localhost:3000/geteventslistCount/"+filter_from+"/"+filter_to)
+    var response = this.pfService.getFormData(this.serviceUrl + "/geteventslistCount/" + filter_from + "/" + filter_to);
 
+    response.subscribe(function (response) {
+      current.errorLog = false;
+      current.length = response;
+    },
+      function (err) {
+        current.errorLog = true;
+        current.alertMessage = {
+          type: 'danger',
+          title: 'Something Went wrong. Please Contact Administartor',
+          data: err
+        };
+      });
+  }
+  
 }

@@ -7,12 +7,22 @@ select:focus{
 .hint{
 	color : lightslategray;
 }
-
+.phone-field input:last-of-type{
+  width: 65px;
+}
 .phone-field input{
   display: inline;
-  width: 30%;
+  width: 46px;
+  padding: 8px;
 }
-
+.phone-field .phone-field-span{
+  color: #bbbbbb;
+  /* margin: 0px 10px; */
+  font-size: 20px;
+}
+.upload-btn{
+  box-shadow: none;
+}
 /*---------------------------------------------*/
 input {
     outline: none;

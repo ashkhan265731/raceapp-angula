@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from "rxjs/Rx";
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params, NavigationEnd } from '@angular/router';
 import { FormControl, FormGroup, FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 import { FileUpload } from 'ng2-fileupload';
@@ -27,14 +27,15 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     'Cash',
   ];
   states = [
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
-    'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-    'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-    'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico',
-    'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
-    'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+    'alabama', 'alaska', 'arizona', 'arkansas', 'california', 'colorado', 'connecticut', 'delaware',
+    'florida', 'georgia', 'hawaii', 'idaho', 'illinois', 'indiana', 'iowa', 'kansas', 'kentucky',
+    'louisiana', 'maine', 'maryland', 'massachusetts', 'michigan', 'minnesota', 'mississippi',
+    'missouri', 'montana', 'nebraska', 'nevada', 'new hampshire', 'new jersey', 'new mexico',
+    'new york', 'north carolina', 'north dakota', 'ohio', 'oklahoma', 'oregon', 'pennsylvania',
+    'rhode Island', 'south carolina', 'south dakota', 'tennessee', 'texas', 'utah', 'vermont',
+    'virginia', 'washington', 'west virginia', 'wisconsin', 'wyoming'
   ];
+  selected = "minnesota";
 
   @ViewChild('keyup_input') keyup_input: ElementRef;
   @ViewChild('keyup_exhibition') keyup_exhibition: ElementRef;
@@ -51,14 +52,18 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
   @ViewChild('keyup_hookupinput') keyup_hookupinput: ElementRef;
   @ViewChild('keyup_hookup') keyup_hookup: ElementRef;
   @ViewChild('keyup_hookupfee') keyup_hookupfee: ElementRef;
-
+  @ViewChild('phone1') phone1: ElementRef;
+  @ViewChild('phone2') phone2: ElementRef;
+  @ViewChild('phone3') phone3: ElementRef;
   race_document: any;
   validate_addrider: any = false;
   isEventformSubmited: any = false;
 
   userData: any = {};
   alertStatus: any = false;
-
+  ph1:any='';
+  ph2:any='';
+  ph3:any='';
   @Input('group')
   public options: FormGroup;
   ridetype: any;
@@ -81,6 +86,7 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
   // file upload new code
   uploader: FileUploader = new FileUploader({ url: this.serviceUrl + "/uploadfiles/usersignup/" + this.recaetypeid });
   attachmentList: any = [];
+  validatePhoneumber: any = false;
 
   constructor(
     private http: HttpClient,
@@ -92,7 +98,12 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     private dataService: DataService,
     private socketIoService: SocketIoService,
   ) {
-
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+        return;
+      }
+      window.scrollTo(0, 0)
+    });
     this.uploader.onAfterAddingFile = (file: any) => { file.withCredentials = false; };
     this.dataService.changeMessage('default message');
     sessionStorage.setItem("eventkey", this.recaetypeid);
@@ -121,17 +132,97 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     //this.getUserDetails();
 
     /*This code will call socket io service and update sigleEventData */
+    // this.connection = this.socketIoService.getMessages().subscribe(message => {
+    //   console.log('Message from socket -->');
+    //   console.log(message);
+    //   var data = JSON.parse(JSON.stringify(message));
+    //   if (data._id == this.eventId) {
+    //     this.singleEventData = JSON.stringify(message);
+    //   }
+    // });
+    var current = this;
+    var socketObject = {};
     this.connection = this.socketIoService.getMessages().subscribe(message => {
-      console.log('Message from socket -->');
-      console.log(message);
-      var data = JSON.parse(JSON.stringify(message));
-      if (data._id == this.eventId) {
-        this.singleEventData = JSON.stringify(message);
+
+      //http
+      if (current.singleEventData._id) {
+        current.http.get(current.serviceUrl + "/geteventdetails/" + current.singleEventData._id).
+          subscribe((response) => {
+            console.log(response);
+            console.log(typeof response);
+            socketObject = response;
+            console.log(typeof socketObject);
+
+
+            if (socketObject['_id'] == current.singleEventData._id) {
+              if (socketObject['etimeslot']) {
+                for (var i = 0; i < socketObject['etimeslot'].length; i++) {
+                  console.log(parseInt(socketObject['etimeslot'][i].exhibitions_quantity));
+                  current.singleEventData.etimeslot[i].exhibitions_quantity = parseInt(socketObject['etimeslot'][i].exhibitions_quantity) ;
+                  console.log(current.singleEventData.etimeslot[i].exhibitions_quantity);
+                }
+              }
+
+              if (socketObject['wtimeslot']) {
+                for (var i = 0; i < socketObject['wtimeslot'].length; i++) {
+                  console.log(parseInt(socketObject['wtimeslot'][i].warmup_quantity));
+                  current.singleEventData.wtimeslot[i].warmup_quantity = parseInt(socketObject['wtimeslot'][i].warmup_quantity);
+                  console.log(current.singleEventData.wtimeslot[i].warmup_quantity);
+                }
+              }
+              if (socketObject['stalls']) {
+                current.singleEventData.stalls = parseInt(socketObject['stalls']);
+              }
+              if (socketObject['electric_quantity']) {
+                current.singleEventData.electric_quantity = parseInt(socketObject['electric_quantity']) ;
+              }
+              if (socketObject['shavings_quantity']) {
+                current.singleEventData.shavings_quantity = parseInt(socketObject['shavings_quantity']) ;
+              }
+            }
+          },
+          function (err) {
+            current.errorLog = true;
+            current.alertMessage = {
+              type: 'danger',
+              title: 'Something Went wrong. Please Contact Administartor',
+              data: err
+            }; }
+        )
       }
-    });
+    })
 
   }
+  validatePhone() {
+    if (this.ph1) {
+      if (this.ph1 && this.ph1.toString().length > 2) {
+        this.phone2.nativeElement.focus();
 
+        if (this.ph2) {
+          if (this.ph2 && this.ph2.toString().length > 2) {
+            this.phone3.nativeElement.focus();
+
+            if (this.ph3) {
+              if (this.ph1.toString().length > 2 && this.ph2.toString().length > 2 && this.ph3.toString().length > 3) {
+                this.phone3.nativeElement.blur();
+              }
+            }
+
+          }
+        }
+
+      }
+    }
+    if (this.ph1 && this.ph2 && this.ph3) {
+      var validatePhone = parseInt(this.ph1.length) + parseInt(this.ph2.length) + parseInt(this.ph3.length);
+      console.log(validatePhone);
+      if (validatePhone == 10) {
+        this.validatePhoneumber = false;
+      } else {
+        this.validatePhoneumber = true;
+      }
+    }
+  }
   getUserDetails() {
     var current = this;
     this.http.get(this.serviceUrl + "/getuserdetails/" + this.user_id)
@@ -190,10 +281,10 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     this.userData.email = this.eventSignUpData.email;
     this.userData.city = this.eventSignUpData.city;
     this.userData.state = this.eventSignUpData.state;
-    this.userData.phone = this.eventSignUpData.phone;
+    this.userData.phone =  this.ph1+this.ph2+this.ph3;
     this.userData.zipcode = this.eventSignUpData.zip;
     this.userData.addline1 = this.eventSignUpData.address1;
-    this.userData.addline2 = this.eventSignUpData.address2;
+    this.userData.addline2 = '';
     var data = JSON.stringify(this.userData);
     var response = this.http.post(this.serviceUrl + "/registerGuestuser", { "data": data })
       .subscribe(function (res) {
@@ -300,9 +391,20 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     current.eventSignUpData.shavings_price = current.singleEventData.shavings_price ? current.singleEventData.shavings_price : 0;
     current.eventSignUpData.office_fee = current.singleEventData.office_fee ? current.singleEventData.office_fee : 0;
     current.eventSignUpData.late_fee = current.singleEventData.late_fee ? current.singleEventData.late_fee : 0;
+    var currentDate = Date.parse(new Date().toString());
+
+    console.log('Current Date :'+ currentDate + ' due_date ' +current.singleEventData.due_date);
+    console.log('Current Date :'+ currentDate + ' due_date ' +current.singleEventData.due_date);
+
+    if(current.singleEventData.due_date < currentDate){
+      current.eventSignUpData.late_fee = current.singleEventData.late_fee ? current.singleEventData.late_fee : 0;
+    }else{
+      current.eventSignUpData.late_fee = 0;
+    }
   }
 
   eventSignUp() {
+    var currentDate = Date.parse(new Date().toString());
     this.isEventformSubmited = true;
     this.eventSignUpData.racetypeList = this.racetypeList;
     this.eventSignUpData.eventId = this.eventId;
@@ -339,13 +441,18 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     this.eventSignUpData.wtimeslots = this.selectedWarmupTimeSlots;
     this.eventSignUpData.electric_quantity = this.eventSignUpData.electric_quantity ? this.eventSignUpData.electric_quantity : '0';
     this.eventSignUpData.userStalls = this.eventSignUpData.userStalls ? this.eventSignUpData.userStalls : '0';
+    this.eventSignUpData.shavings_quantity = this.eventSignUpData.shavings_quantity ? this.eventSignUpData.shavings_quantity : '0';
 
+    if(this.singleEventData.due_date < currentDate){
+      this.eventSignUpData.late_fee = this.singleEventData.late_fee ? this.singleEventData.late_fee : 0;
+    }else{
+      this.eventSignUpData.late_fee = 0;
+    }
     var data = JSON.stringify(this.eventSignUpData);
 
     var current = this;
 
     var response = this.pfService.postFormData(this.serviceUrl + "/eventsignup/", data)
-    //    this.http.post("http://localhost:3000/eventsignup/", { "data": data })
     response.subscribe(function (response) {
       current.errorLog = false;
       current.singleEventData = response;
@@ -368,7 +475,7 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     );
   }
 
-
+ 
 
   validateExhibitionquantity(event, entryQuantity, exhibitions_quantity) {
 
@@ -495,7 +602,23 @@ export class SignupGuestUsersComponent implements OnInit, OnDestroy {
     //   }
 
   }
+  validateshavingsquantity(event, ushavings_quantity, sh_quantity) {
 
+    if (Number(ushavings_quantity) >= Number(sh_quantity)) {
+      var text = "Shavings quantity should be lesser than available  quantity";
+      this.dataService.changeMessage(text);
+      this.eventSignUpData.shavings_quantity = 0;
+      this.eventSignUpData.shavings_price = 0;
+    } else {
+      if (isNaN(this.eventSignUpData.shavings_quantity)) {
+        this.eventSignUpData.shavings_price = this.eventSignUpData.shavings_quantity * this.eventSignUpData.shavings_price;
+      }
+    }
+    this.singleEventData.shavings_price = this.eventSignUpData.shavings_price;
+    this.calculateTotalPrice(this.singleEventData);
+   
+
+  }
   calculateTotalPrice(fee) {
     var exhibitions_entryFee = Number(isNaN(fee.exhibitions_entryFee) ? 0 : fee.exhibitions_entryFee);
     var warmup_entry_fee = Number(isNaN(fee.warmup_entry_fee) ? 0 : fee.warmup_entry_fee);

@@ -90,9 +90,10 @@
          
             <div class="row">
               <div class="col-md-6 wrap-input100 validate-input m-b-16 phone-field" >
-                <input type="number" class="input100" placeholder="Phone" name="phone1" [(ngModel)]="user.phone1" #phone1 #user_phone1="ngModel" (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="3" >
-                <input type="number" class="input100" placeholder="" name="phone2" [(ngModel)]="user.phone2" #phone2 #user_phone2="ngModel" (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="3">
-                <input  type="number" class="input100" placeholder="" name="phone3" [(ngModel)]="user.phone3" #phone3 #user_phone3="ngModel" (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="4">
+              <span class="phone-field-span">(</span><input type="text" pattern="[0-9]{3}" class="input100" placeholder="XXX" name="phone1" [(ngModel)]="user.phone1" #phone1 #user_phone1="ngModel" (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="3" >
+              <span class="phone-field-span">)</span><span class="phone-field-span">-</span>
+                <input type="text" class="input100" pattern="[0-9]{3}" placeholder="XXX" name="phone2" [(ngModel)]="user.phone2" #phone2 #user_phone2="ngModel" (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="3"><span class="phone-field-span">-</span>
+                <input  type="text" class="input100" pattern="[0-9]{4}" placeholder="XXXX" name="phone3" [(ngModel)]="user.phone3" #phone3 #user_phone3="ngModel" (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="4">
                 <span class="focus-input100"></span>
                 <span class="symbol-input100">
                     <i class="material-icons">phone</i>
@@ -100,28 +101,29 @@
                  <div class="error" *ngIf="validatePhoneumber">Invalid Phone Number</div>
                 <!-- <div class="error" *ngIf="user_phone.errors?.pattern && (user_phone.touched || user_phone.dirty)">Phone Must Contain only numbers</div> -->
               </div>
-
-              <div class="col-md-6 wrap-input100 validate-input m-b-16" >
-                <input class="input100 registerinput100" matInput placeholder="City" name="city" [(ngModel)]="user.city" #city="ngModel" required pattern="[a-zA-Z. _]*">
-               
-                <div class="error" *ngIf="city.errors?.required && (city.touched )">City cannot be empty</div>
-                <div class="error" *ngIf="city.errors?.pattern && (city.touched || city.dirty)">City is not valid</div>
-              </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 wrap-input100 validate-input m-b-16">
-                  <input class="input100 registerinput100" id="inputEventName4" placeholder="Address Line1"  name="addline1" [(ngModel)]="user.addline1" 
+              <div class="col-md-6 wrap-input100 validate-input m-b-16">
+                  <input class="input100 registerinput100" id="inputEventName4" placeholder="Street Address"  name="addline1" [(ngModel)]="user.addline1" 
                     required #addline1="ngModel">
                     <div class="error" *ngIf="addline1.errors?.required && (addline1.touched )">Address cannot be empty</div>
                     <div class="error" *ngIf="addline1.errors?.pattern && (addline1.touched || addline1.dirty)">Address is not valid</div>
                 </div>
-                <div class="col-md-6 wrap-input100 validate-input m-b-16">
+                <!-- <div class="col-md-6 wrap-input100 validate-input m-b-16">
                   <input class="input100 registerinput100" id="inputEventName5" placeholder="Address Line2" name="addline2" [(ngModel)]="user.addline2"
                     >
-                </div>
+                </div> -->
+         
+            </div>
+            <div class="row">
+              
               </div>
             
             <div class="row">
+                <div class="col-md-6 wrap-input100 validate-input m-b-16" >
+                    <input class="input100 registerinput100" matInput placeholder="City" name="city" [(ngModel)]="user.city" #city="ngModel" required pattern="[a-zA-Z. _]*">
+                   
+                    <div class="error" *ngIf="city.errors?.required && (city.touched )">City cannot be empty</div>
+                    <div class="error" *ngIf="city.errors?.pattern && (city.touched || city.dirty)">City is not valid</div>
+                  </div>
               <div class="col-md-6 wrap-input100 validate-input m-b-16" >
                       <select id="inputState" class="input100 registerinput100"  placeholder="State" name="state" [(ngModel)]="user.state" #state="ngModel">
                         <option value="select" disabled>Choose State</option>
@@ -130,17 +132,23 @@
                       <div class="error" *ngIf="state.errors?.required ">State cannot be empty</div>
               </div>
 
-              <div class="col-md-6 wrap-input100 validate-input m-b-16" >
-                  <input class="input100 registerinput100" #zipcode="ngModel" maxlength="5" [(ngModel)]="user.zipcode" name="zipcode" placeholder="Postal Code" pattern="[0-9]{5}"
-                  required>
-                  <div class="error" *ngIf="zipcode.errors?.required && (zipcode.touched )">Zipcode cannot be empty</div>
-                  <div class="error" *ngIf="zipcode.errors?.pattern && (zipcode.touched || zipcode.dirty)">Zipcode is not valid</div>
-                </div>
+              
               </div>
-                <div class="m-b-16" >
-                <input placeholder="Profile Picture" class="file" type="file" name="file" required (change)="fileChangeEvent($event)">
-                  </div>
-  
+              <div class="row">
+                  <div class="col-md-6 wrap-input100 validate-input m-b-16" >
+                      <input class="input100 registerinput100" #zipcode="ngModel" maxlength="5" [(ngModel)]="user.zipcode" name="zipcode" placeholder="Postal Code" pattern="[0-9]{5}"
+                      required>
+                      <div class="error" *ngIf="zipcode.errors?.required && (zipcode.touched )">Zipcode cannot be empty</div>
+                      <div class="error" *ngIf="zipcode.errors?.pattern && (zipcode.touched || zipcode.dirty)">Zipcode is not valid</div>
+                    </div>
+                  
+              </div>
+            
+              <div class="  wrap-input100 validate-input m-b-16 m-t-10" >
+                  <label for="imageUpload" class="btn upload-btn">Choose Profile Picture</label>
+              <input placeholder="Profile Picture" class="file"  type="file" name="file" required (change)="fileChangeEvent($event)" id="imageUpload" accept="image/*" style="display: none">
+            <span *ngIf="filename">{{filename}}</span>   
+            </div>
               <div class="contact100-form-checkbox m-b-16">
                 <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
                 <label class="label-checkbox100" for="ckb1">

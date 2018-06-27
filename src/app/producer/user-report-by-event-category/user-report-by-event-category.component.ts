@@ -12,6 +12,7 @@ declare var jsPDF: any;
   styleUrls: ['./user-report-by-event-category.component.css']
 })
 export class UserReportByEventCategoryComponent implements OnInit {
+  sessionid: any='';
   serviceUrl = environment.serviceUrl;
   errorLog:any = false;
   eventSignedUpUsers:any={};
@@ -29,7 +30,8 @@ export class UserReportByEventCategoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
+    var session = JSON.parse(sessionStorage.getItem("user"));
+    this.sessionid = session._id;
     this.eventId = this.route.snapshot.params['eid'];
     this.seachValue =this.route.snapshot.params['searchvalue'];
     this.searchType =this.route.snapshot.params['searchtype'];

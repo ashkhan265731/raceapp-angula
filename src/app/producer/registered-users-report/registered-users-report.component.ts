@@ -220,7 +220,18 @@ export class RegisteredUsersReportComponent implements OnInit {
 
     var current = this;
     var searchName = this.searchCriteria.searchName ? this.searchCriteria.searchName : null;
-    var searchValue = this.searchCriteria.searchValue ? this.searchCriteria.searchValue : null;
+    var searchValue;
+if(this.searchCriteria.searchValue){
+  searchValue = this.searchCriteria.searchValue;
+}else{
+  searchValue = null;
+}
+
+  if(searchValue){
+    searchValue = searchValue.toLowerCase();
+  }
+  
+  console.log(searchValue);  
 
     this.http.get(this.serviceUrl + "/getevententriesusers/" + searchName + "/" + searchValue + "/" + filter_from + "/" + filter_to)
       .subscribe(function (response) {

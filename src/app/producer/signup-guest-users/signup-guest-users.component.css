@@ -2,3 +2,17 @@
     color: red;
     text-transform: capitalize-all;
 }
+.time-span{
+    margin: 0px 18px;
+    font-weight: bold;
+    color: #000;
+}
+.phone-field input{
+    display: inline;
+    width: 64px;
+    text-align: center;
+  }
+  .phone-field label{
+      display: block !important;
+      width: 100%;
+  }

@@ -23,7 +23,7 @@
             </a>
             <ul class="breadcrumb">
               <li>
-                <a href="index.html">
+                <a routerLink="/producer/dashboard">
                   <i class="icon-home2 position-left"></i> Home</a>
               </li>
               <li>Event </li>
@@ -41,24 +41,29 @@
 
     <div class="row">
       <div class="col-xs-12 col-sm-12">
-        <div class="jumbotron jumbotron-fluid">
+        <div class="jumbotron jumbotron-fluid capitalize">
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-6">
-                <h5 class="display-4">{{eventData.event_name}}</h5>
+                <h4 class="display-4">{{eventData.event_name}}</h4>
                 <hr class="display-4">
                 <p class="lead">
                   <b>From </b>{{eventData.from_date | date: 'MMMM d, y'}} -
                   <b>To </b>{{eventData.to_date | date: 'MMMM d, y'}} </p>
+                  <hr class="display-4">
                 <p class="lead">
-                  <i class="material-icons icon">place</i>
+               
                   <strong>{{eventData.location}}</strong>
                 </p>
                 <p class="lead" *ngIf="eventData.event_addline">{{eventData.event_addline}}, </p>
-                <p class="lead" *ngIf="eventData.event_city || eventData.event_state">{{eventData.event_city}},{{eventData.event_state}},{{eventData.event_zipcode}} </p>
+                <p class="lead" *ngIf="eventData.event_city || eventData.event_state">{{eventData.event_city}},{{eventData.event_state}},{{eventData.event_zipcode}} 
+                    <i class="material-icons icon">place</i>
+                </p>
+               
+                <hr class="display-4">
                 <p class="lead">
                   <span class="label">Sanctions :</span>
-                  <span *ngFor="let sanctions of eventData.sanctions" class="sanc">{{sanctions.sanction_name}} </span>
+                  <span class="text-uppercase sanc" *ngFor="let sanctions of eventData.sanctions" >{{sanctions.sanction_name}} </span>
                 </p>
               </div>
               <div class="col-md-6">
@@ -111,7 +116,7 @@
                   <tr>
                     <th class="w-200">Name</th>
                     <th scope="col">Fees</th>
-                    <th scope="col"> edit</th>
+                    <th  *ngIf="eventData.producer_id==sessionid" scope="col"> Edit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -120,8 +125,8 @@
                       <a [routerLink]="['/producer/userreportbyeventdetails',eventId,racetype?.type,'raceclass']" style="cursor:pointer; text-transform: capitalize">{{racetype?.type}}</a>
                     </td>
                     <td> {{racetype?.price | currency}}</td>
-                    <td>
-                      <span class="edit" *ngIf="eventData.producer_id==sessionid" data-toggle="modal" data-target="#exampleModal">
+                    <td  *ngIf="eventData.producer_id==sessionid">
+                      <span class="edit" data-toggle="modal" data-target="#exampleModal">
                         <a (click)="openDialog(eventData?.racetype,'racetype','edit',i);modalTitle='Edit Race Class Type';">
                           <i class="material-icons edit-icon">edit</i>
                         </a>
@@ -157,7 +162,7 @@
                     <th scope="col">Time</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Fees</th>
-                    <th scope="col">Edit</th>
+                    <th  *ngIf="eventData?.producer_id==sessionid" scope="col">Edit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,16 +171,16 @@
                       <a [routerLink]="['/producer/userreportbyeventdetails',eventId,timeslot?.exhibition_day,'exhibition']" style="cursor:pointer;">{{timeslot?.exhibition_day}}</a>
                     </td>
                     <td>
-                      {{timeslot.from?.hour+":"+timeslot.from?.minute}} - {{timeslot.to?.hour+":"+timeslot.to?.minute}}
-                    </td>
+                        {{timeslot?.from | timeConvertor}} - {{timeslot?.to | timeConvertor}}
+                      </td>
                     <td>
                       {{timeslot.exhibitions_quantity}}
                     </td>
                     <td>
                       {{timeslot.exhibitions_fee}}
                     </td>
-                    <td>
-                      <span class="edit" *ngIf="eventData?.producer_id==sessionid" data-toggle="modal" data-target="#exampleModal">
+                    <td *ngIf="eventData?.producer_id==sessionid">
+                      <span class="edit"  data-toggle="modal" data-target="#exampleModal">
                         <a (click)="openDialog(eventData?.etimeslot,'etimeslot','edit',i);modalTitle='Edit Exhibitions';">
                           <i class="material-icons edit-icon">edit</i>
                         </a>
@@ -199,7 +204,7 @@
             <h5>Warmups
 
               <span class="edit marg-right" *ngIf="eventData?.producer_id==sessionid" data-toggle="modal" data-target="#exampleModal">
-                <a (click)="openDialog(eventData?.wtimeslot,'wtimeslot','add');;modalTitle='Add Warmups'">
+                <a (click)="openDialog(eventData?.wtimeslot,'wtimeslot','add');modalTitle='Add Warmups'">
                   <i class="material-icons add-icon">add</i>
                 </a>
               </span>
@@ -212,7 +217,7 @@
                     <th scope="col">Time</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Fees</th>
-                    <th scope="col">Edit</th>
+                    <th *ngIf="eventData.producer_id==sessionid" scope="col">Edit</th>
 
                   </tr>
                 </thead>
@@ -222,7 +227,7 @@
                       <a [routerLink]="['/producer/userreportbyeventdetails',eventId,timeslot?.warmup_day,'warmup']" style="cursor:pointer;">{{timeslot?.warmup_day}}</a>
                     </td>
                     <td>
-                      {{timeslot?.from?.hour+":"+timeslot?.from?.minute}} - {{timeslot?.to?.hour+":"+timeslot?.to?.minute}}
+                      {{timeslot?.from | timeConvertor}} - {{timeslot?.to | timeConvertor}}
                     </td>
                     <td>
                       {{timeslot.warmup_quantity}}
@@ -230,8 +235,8 @@
                     <td>
                       {{timeslot.warmup_fee}}
                     </td>
-                    <td>
-                      <span class="edit" *ngIf="eventData.producer_id==sessionid" data-toggle="modal" data-target="#exampleModal">
+                    <td *ngIf="eventData.producer_id==sessionid">
+                      <span class="edit"  data-toggle="modal" data-target="#exampleModal">
                         <a (click)="openDialog(eventData?.wtimeslot,'wtimeslot','edit',i);modalTitle='Edit Warmups';">
                           <i class="material-icons edit-icon">edit</i>
                         </a>

@@ -13,6 +13,7 @@ import { count } from 'rxjs/operator/count';
   styleUrls: ['./listevents.component.css']
 })
 export class ListeventsComponent implements OnInit {
+  sessionid: any = '';
   @Output() alert: EventEmitter<any> = new EventEmitter();
   alertMessage: any = null;
   errorLog: any = false;
@@ -67,7 +68,7 @@ export class ListeventsComponent implements OnInit {
     var current = this;
     var response = this.pfService.getFormData(this.serviceUrl + "/geteventslists");
     response.subscribe(function (response) {
-      // console.log(response);
+      console.log(response);
       current.eventList = response;
       current.collectSize = Object.keys(response).length;
       //filter
@@ -110,6 +111,8 @@ export class ListeventsComponent implements OnInit {
   }
 
   ngOnInit() {
+    var session = JSON.parse(sessionStorage.getItem("user"));
+    this.sessionid = session._id;
     this.getEvents();
     this.getEventsList(this.page_from, this.pageSize, this.filter_from, this.filter_to, this.sortBy, this.sortOrder, this.search_filter);
   }

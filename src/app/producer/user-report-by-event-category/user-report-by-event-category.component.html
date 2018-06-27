@@ -59,7 +59,7 @@
                         <th>Ride Class</th>
                         <th>City</th>
                         <th>Total</th>
-                        <th>Edit</th>
+                        <th *ngIf="events?.producer_id==sessionid"> Edit</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -73,8 +73,8 @@
                           <td>{{eventEntry.racetypeList[0].ridetype[0]}}</td>
                           <td>{{eventEntry.user_id.city}}</td>
                           <td>{{eventEntry.total}}</td>
-                          <td>  
-                            <button class="btn btn-primary btn-sm edit" [routerLink]="['/producer/editusereventdetails',eventEntry._id]" >
+                          <td *ngIf="events?.producer_id==sessionid">  
+                            <button class="btn btn-primary btn-sm edit"  [routerLink]="['/producer/editusereventdetails',eventEntry._id]" >
                             <i class="material-icons">edit</i>
                             
                           </button></td>
@@ -85,7 +85,7 @@
                 <br>
                 <br>
                 <button  class="btn btn-light hide-on-print " (click)="generate()" *ngIf="usersReportData?.length>0">Generate PDF</button>
-                <button  class=" btn btn-light hide-on-print " (click)="print_instant()" *ngIf="usersReportData?.length>0">Print report</button>
+                <!-- <button  class=" btn btn-light hide-on-print " (click)="print_instant()" *ngIf="usersReportData?.length>0">Print report</button> -->
           
                 <!-- <ngb-pagination [collectionSize]="collectSize" [(page)]="currentPage" (click)="pageEvent(currentPage,$event)"></ngb-pagination> -->
               </div>

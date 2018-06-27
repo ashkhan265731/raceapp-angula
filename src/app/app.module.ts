@@ -26,6 +26,9 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EventHomeComponent } from './event-home/event-home.component';
+import { RegistrationConfirmationComponent } from './registration-confirmation/registration-confirmation.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +38,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     RegisterComponent,
     PasswordResetComponent,
     ForgotPasswordComponent,
+    EventHomeComponent,
+    RegistrationConfirmationComponent,
     
   ],
   imports: [

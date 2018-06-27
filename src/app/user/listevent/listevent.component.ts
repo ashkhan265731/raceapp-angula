@@ -21,7 +21,10 @@ export class ListeventComponent implements OnInit {
   length: any = 100;
   filter_from: any = Date.parse("1900-01-01T06:00:00.000Z");
   filter_to: any = Date.parse("2040-01-01T06:00:00.000Z");
-  alertMessage: any = null; 
+  alertMessage: any = null;
+  ongoingEvents: any = [];
+  upcomingEvents: any = [];
+  expiredEvents: any = [];
 
   constructor(
     private http: HttpClient,
@@ -44,7 +47,7 @@ export class ListeventComponent implements OnInit {
     var user_id = sessionvar['_id'];
 
     this.getMyEvents(user_id);
-    this.getEventsList();    
+    this.getEventsList();
   }
   getEventsList() {
     var current = this;
@@ -59,11 +62,11 @@ export class ListeventComponent implements OnInit {
         b = b.from_date;
         return a > b ? -1 : a < b ? 1 : 0;
       });
-  
+
       setTimeout(() => {
         for (var i = 0; i < current.eventsListData.length; i++) {
           for (var j = 0; j < current.myEventsData.length; j++) {
-            console.log(current.eventsListData[i]._id);
+            //console.log(current.eventsListData[i]._id);
             if (current.eventsListData[i]._id == current.myEventsData[j].event_id._id) {
               current.eventsListData[i].registered = 'true';
               current.eventsListData[i].myeventsid = current.myEventsData[j]._id;
@@ -71,26 +74,45 @@ export class ListeventComponent implements OnInit {
           }
         }
 
-        current.eventsListData = current.eventsListData.filter((el)=>{
-          if( el.registration_start_date<=current.currentDate || el.registration_start_date==null){
+        current.eventsListData.forEach(el => {
+          console.log(current.currentDate)
+          if (el.from_date < current.currentDate && el.to_date > current.currentDate) {
+            console.log("on going events");
+            current.ongoingEvents.push(el);
+          }
+          else if (el.from_date < current.currentDate && el.to_date < current.currentDate) {
+            console.log("expired events");
+            current.expiredEvents.push(el);
+          } else if (el.from_date > current.currentDate) {
+            console.log("upcoming events");
+            current.upcomingEvents.push(el);
+          } else {
+            console.log("empty")
+          }
+        });
+
+        current.eventsListData = current.eventsListData.filter((el) => {
+          if (el.registration_start_date <= current.currentDate) {
             return el;
           }
-        })
+        });
+
+
 
         console.log(current.eventsListData);
       }, 1000);
 
-      
 
-    }, 
-    function (err) {
-      current.errorLog = true;
-      current.alertMessage = {
-        type: 'danger',
-        title: 'Something Went wrong. Please Contact Administartor',
-        data: err
-      };
-    });
+
+    },
+      function (err) {
+        current.errorLog = true;
+        current.alertMessage = {
+          type: 'danger',
+          title: 'Something Went wrong. Please Contact Administartor',
+          data: err
+        };
+      });
   }
   getEventListCount(filter_from, filter_to) {
     var current = this;
@@ -100,15 +122,15 @@ export class ListeventComponent implements OnInit {
     response.subscribe(function (response) {
       current.errorLog = false;
       current.length = response;
-    }, 
-    function (err) {
-      current.errorLog = true;
-      current.alertMessage = {
-        type: 'danger',
-        title: 'Something Went wrong. Please Contact Administartor',
-        data: err
-      };
-    });
+    },
+      function (err) {
+        current.errorLog = true;
+        current.alertMessage = {
+          type: 'danger',
+          title: 'Something Went wrong. Please Contact Administartor',
+          data: err
+        };
+      });
   }
 
   getMyEvents(user_id) {
@@ -119,14 +141,14 @@ export class ListeventComponent implements OnInit {
         current.errorLog = false;
         current.myEventsData = response;
         console.log(current.myEventsData);
-      }, 
-      function (err) {
-        current.errorLog = true;
-        current.alertMessage = {
-          type: 'danger',
-          title: 'Something Went wrong. Please Contact Administartor',
-          data: err
-        };
-      });
+      },
+        function (err) {
+          current.errorLog = true;
+          current.alertMessage = {
+            type: 'danger',
+            title: 'Something Went wrong. Please Contact Administartor',
+            data: err
+          };
+        });
   }
 }

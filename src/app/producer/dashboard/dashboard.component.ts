@@ -41,13 +41,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
 
-    setTimeout(() => {
-      this.alertMessage = {
-        type: 'danger',
-        title: 'U can add any title here',
-        data: 'some data'
-      };
-    }, 5000);
+    // setTimeout(() => {
+    //   this.alertMessage = {
+    //     type: 'danger',
+    //     title: 'U can add any title here',
+    //     data: 'some data'
+    //   };
+    // }, 5000);
 
     var current = this;
     this.getUserDetails();

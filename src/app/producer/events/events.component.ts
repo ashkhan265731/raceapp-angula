@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params ,NavigationEnd} from '@angular/router';
 import { FormGroup, FormArray, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DaysBetweenTwoDatesService } from './../../services/days-between-two-dates.service';
@@ -84,7 +84,12 @@ export class EventsComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+        return;
+      }
+      window.scrollTo(0, 0)
+    });
     var sessionvar = JSON.parse(sessionStorage.getItem('user'));
     this.producer_id = sessionvar['_id'];
 
@@ -96,7 +101,7 @@ export class EventsComponent implements OnInit {
 
       var from_date = Date.parse(new Date(fromdate.year, fromdate.month, fromdate.day).toString());
       var to_date = Date.parse(new Date(todate.year, todate.month, todate.day).toString());
-      if (from_date < to_date && from_date > current_date) {
+      if (from_date <= to_date && from_date > current_date) {
         this.validateDate = false;
         //calculate days between dates
         this.getExhibitionDays(fromdate, todate);
@@ -106,12 +111,16 @@ export class EventsComponent implements OnInit {
     }
   }
 
-  getValidateDueDate(fromdate, duedate) {
+  getValidateDueDate(fromdate, reg_start_date, duedate) {
 
     //parse date
     var from_date = Date.parse(new Date(fromdate.year, fromdate.month, fromdate.day).toString());
     var due_date = Date.parse(new Date(duedate.year, duedate.month, duedate.day).toString());
-    if (due_date < from_date) {
+    var registration_start_date =  Date.parse(new Date(reg_start_date.year, reg_start_date.month, reg_start_date.day).toString());
+    if(registration_start_date==null){
+      registration_start_date = this.currentDate;
+    }
+    if ( due_date >= registration_start_date) {
       this.validateDueDate = false;
     } else {
       this.validateDueDate = true;
@@ -198,6 +207,18 @@ export class EventsComponent implements OnInit {
   //     return true;
   //   }
   // }
+
+  validateRaceClass(){
+    if(this.raceclass.type==' '){
+      this.raceclass.type = this.raceclass.type.replace(" ","");
+    }
+    
+  }
+  validateEventName(){
+    if(this.event.event_name==' '){
+      this.event.event_name = this.event.event_name.replace(" ","");
+    }
+  }
 
   addRaceClass(raceclassData) {
     var obj = {

@@ -5,10 +5,15 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { EventHomeComponent } from './event-home/event-home.component';
+import { RegistrationConfirmationComponent } from './registration-confirmation/registration-confirmation.component';
 
 const routes: Routes = [
   {
     path: 'home', component: HomeComponent
+  },
+  {
+    path: 'event_home', component: EventHomeComponent
   },
   {
     path: '', redirectTo: 'home', pathMatch: 'full'
@@ -24,6 +29,9 @@ const routes: Routes = [
   },
   {
     path: 'register', component: RegisterComponent
+  },
+  {
+    path: 'reg-confirmation', component: RegistrationConfirmationComponent
   },
   {
     path: 'producer', loadChildren: './producer/producer.module#ProducerModule'

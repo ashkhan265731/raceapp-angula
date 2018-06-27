@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../../environments/environment';
 import { DaysBetweenTwoDatesService } from '../../services/days-between-two-dates.service';
@@ -29,7 +29,7 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
   eventEntries: any = {};
   recaetypeid: any;
   connection: any;
-  alertMessage: any = null; 
+  alertMessage: any = null;
 
   attachmentList: any = [];
   url: any = '';
@@ -45,6 +45,10 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('keyup_hookup') keyup_hookup: ElementRef;
   @ViewChild('keyup_hookupfee') keyup_hookupfee: ElementRef;
 
+  @ViewChild('keyup_shavingsinput') keyup_shavingsinput: ElementRef;
+  @ViewChild('keyup_shavings') keyup_shavings: ElementRef;
+  @ViewChild('keyup_shavingsfee') keyup_shavingsfee: ElementRef;
+  status: any;
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -63,7 +67,15 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
   */
 
   ngOnInit() {
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+        return;
+      }
+      window.scrollTo(0, 0)
+    });
     this.id = this.route.snapshot.params['id'];
+    this.status = this.route.snapshot.params['status'];
+    console.log(this.status);
     this.getSingleUserDetails();
 
     var current = this;
@@ -96,24 +108,26 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
                   // console.log(current.singleUserData.wtimeslots[i].warmup_quantity);
                 }
               }
+            
               if (socketObject['stalls']) {
-                // current.singleUserData.userStalls = parseInt(socketObject['stalls']);
-
+                current.eventData.stalls = parseInt(socketObject['stalls'])+ parseInt(current.singleUserData.userStalls);
               }
               if (socketObject['electric_quantity']) {
-                // current.singleUserData.electric_quantity = parseInt(socketObject['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
-
+                current.eventData.electric_quantity = parseInt(socketObject['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
+              }
+              if (socketObject['shavings_quantity']) {
+                current.eventData.shavings_quantity = parseInt(socketObject['shavings_quantity']) + parseInt(current.singleUserData.shavings_quantity);
               }
             }
           },
-          function (err) {
-            current.errorLog = true;
-            current.alertMessage = {
-              type: 'danger',
-              title: 'Something Went wrong. Please Contact Administartor',
-              data: err
-            };
-          })
+            function (err) {
+              current.errorLog = true;
+              current.alertMessage = {
+                type: 'danger',
+                title: 'Something Went wrong. Please Contact Administartor',
+                data: err
+              };
+            })
       }
     })
   }
@@ -154,15 +168,16 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
         current.getEventDetails(current.event_id._id);
         current.producer_id = current.singleUserData.producer_id;
         current.getProducerDetails(current.producer_id);
-      }, 
-      function (err) {
-        current.errorLog = true;
-        current.alertMessage = {
-          type: 'danger',
-          title: 'Something Went wrong. Please Contact Administartor',
-          data: err
-        };
-      });
+
+      },
+        function (err) {
+          current.errorLog = true;
+          current.alertMessage = {
+            type: 'danger',
+            title: 'Something Went wrong. Please Contact Administartor',
+            data: err
+          };
+        });
   }
   getProducerDetails(pid) {
     var current = this;
@@ -170,15 +185,15 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
       .subscribe(function (response) {
         current.errorLog = false;
         current.producerData = response;
-      }, 
-      function (err) {
-        current.errorLog = true;
-        current.alertMessage = {
-          type: 'danger',
-          title: 'Something Went wrong. Please Contact Administartor',
-          data: err
-        };
-      })
+      },
+        function (err) {
+          current.errorLog = true;
+          current.alertMessage = {
+            type: 'danger',
+            title: 'Something Went wrong. Please Contact Administartor',
+            data: err
+          };
+        })
   }
   getEventDetails(id) {
     var current = this;
@@ -196,18 +211,20 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
         }
         current.eventData['stalls'] = parseInt(current.eventData['stalls']) + parseInt(current.singleUserData.userStalls);
         current.eventData['electric_quantity'] = parseInt(current.eventData['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
+        current.eventData['shavings_quantity'] = parseInt(current.eventData['shavings_quantity']) + parseInt(current.singleUserData.shavings_quantity);
+
 
         // current.singleUserData.userStalls = parseInt(current.eventData['stalls']) + parseInt(current.singleUserData.userStalls);
         //current.singleUserData.electric_quantity = parseInt(current.eventData['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
-      }, 
-      function (err) {
-        current.errorLog = true;
-        current.alertMessage = {
-          type: 'danger',
-          title: 'Something Went wrong. Please Contact Administartor',
-          data: err
-        };
-      });
+      },
+        function (err) {
+          current.errorLog = true;
+          current.alertMessage = {
+            type: 'danger',
+            title: 'Something Went wrong. Please Contact Administartor',
+            data: err
+          };
+        });
 
   }
 
@@ -399,7 +416,7 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
         this.singleUserData.racetypeList[this.singleUserData.racetypeList.length - 1].filename = response.uploadname;
         this.uploader.onAfterAddingFile = (file: any) => { file.withCredentials = false; };
       } else if (this.eventType == 'racetype' && this.formType == 'edit') {
-       
+
         this.singleUserData.racetypeList[this.index].filename = response.uploadname;
         this.uploader.onAfterAddingFile = (file: any) => { file.withCredentials = false; };
       }
@@ -530,6 +547,9 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
       this.dataService.changeMessage(text);
       this.singleUserData.userStalls = 0;
       this.singleUserData.stalls_price = 0;
+    } else if(this.singleUserData.userStalls == ''){
+      this.singleUserData.userStalls = 0;
+      this.singleUserData.stalls_price = 0;
     } else {
       if (this.singleUserData.userStalls) {
         this.singleUserData.stalls_price = this.singleUserData.userStalls * this.eventData.stalls_price;
@@ -557,11 +577,11 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
       this.dataService.changeMessage(text);
       this.singleUserData.electric_quantity = 0;
       this.singleUserData.electric_price = 0;
-    } else {
-      console.log(this.singleUserData.electric_quantity);
+    } else if(this.singleUserData.electric_quantity == ''){
+      this.singleUserData.electric_quantity = 0;
+      this.singleUserData.electric_price = 0;
+    }  else {
       if (this.singleUserData.electric_quantity) {
-        console.log(e_quantity);
-        console.log(this.eventData.electric_price)
         this.singleUserData.electric_price = parseInt(this.singleUserData.electric_quantity) * parseInt(this.eventData.electric_price);
       }
     }
@@ -581,7 +601,26 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
 
   }
 
+  validateshavingsquantity(event, ushavings_quantity, sh_quantity) {
 
+
+    if (Number(ushavings_quantity) >= Number(sh_quantity)) {
+      console.log(sh_quantity);
+      var text = "Entry quantity should be lesser than available shavings_quantity";
+      this.dataService.changeMessage(text);
+      this.singleUserData.shavings_quantity = 0;
+      this.singleUserData.shavings_price = 0;
+    }else if(this.singleUserData.shavings_quantity == ''){
+      this.singleUserData.shavings_quantity = 0;
+      this.singleUserData.shavings_price = 0;
+    } else {
+      if (this.singleUserData.shavings_quantity) {
+        this.singleUserData.shavings_price = parseInt(this.singleUserData.shavings_quantity) * parseInt(this.eventData.shavings_price);
+      }
+    }
+ 
+
+  }
   /*-- addons ends --*/
   edit_addons(eid, uid, eventType, formType) {
     this.eventType = eventType;
@@ -596,8 +635,19 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
     this.singleUserData.etimeslots.forEach(el => {
 
     });
+    var currentDate = Date.parse(new Date().toString());
 
-
+  
+    if (this.eventData.due_date < currentDate) {
+      this.singleUserData.late_fee = this.eventData.late_fee ?this.eventData.late_fee: 0;
+      this.alertMessage = {
+        type: 'info',
+        title: 'Late Fee of $'+this.eventData.late_fee+' Applies After Due Date ',
+        data: ''
+      };
+    } else {
+      this.singleUserData.late_fee = 0;
+    }
     //exhibitions
     var userEventEntry = this.singleUserData.etimeslots;
     var producerEventEntry = this.eventData.etimeslot;
@@ -643,9 +693,7 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
     this.data.producer_id = this.singleUserData.producer_id;
     this.data.event_id = this.singleUserData.event_id._id;
     this.data.eventsignup_id = this.singleUserData._id;
-    console.log("----------------");
-    console.log(producerEventEntry);
-    console.log(userEventEntry);
+    
     this.data.producerEventData = this.eventData;
     this.data.userEventData = this.singleUserData;
 
@@ -665,12 +713,15 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
       user_event_electric_quantity: this.singleUserData.electric_quantity,
       electric_price: this.eventData.electric_price,
       user_event_electric_price: this.singleUserData.electric_price,
-
+      shavings_quantity: this.eventData.shavings_quantity - this.singleUserData.shavings_quantity,
+      user_event_shavings_quantity: this.singleUserData.shavings_quantity,
+      shavings_price: this.eventData.shavings_price,
+      user_event_shavings_price: this.singleUserData.shavings_price,
 
     });
 
 
-    var current = this;    
+    var current = this;
     var response = this.http.post(this.serviceUrl + "/updateuserevents", { "data": upadte_data })
       .subscribe((response) => {
         console.log("response")
@@ -681,14 +732,14 @@ export class MyEventDetailsComponent implements OnInit, OnDestroy {
           this.router.navigate(["user/ordersummery/" + this.singleUserData._id]);
         }
       },
-      function (err) {
-        current.errorLog = true;
-        current.alertMessage = {
-          type: 'danger',
-          title: 'Something Went wrong. Please Contact Administartor',
-          data: err
-        };
-      });
+        function (err) {
+          current.errorLog = true;
+          current.alertMessage = {
+            type: 'danger',
+            title: 'Something Went wrong. Please Contact Administartor',
+            data: err
+          };
+        });
   }
 
 }

@@ -39,7 +39,11 @@
             <h5>Sub Total</h5>
           </td>
         </tr>
-
+        <tr class="service">
+            <td class="tableitem"><p class="itemtext">RaceClass</p></td>
+            <td class="tableitem"><p class="itemtext">-</p></td>
+            <td class="tableitem Rate"><p class="itemtext">{{racetypeList_total | currency}}</p></td>
+          </tr>
         <tr class="service">
           <td class="tableitem">
             <p class="itemtext">Exhibitions</p>
@@ -87,6 +91,19 @@
             <p class="itemtext">{{singleUserData.electric_price | currency}}</p>
           </td>
         </tr>
+
+
+        <tr class="service">
+            <td class="tableitem">
+              <p class="itemtext">Shavings Quantity</p>
+            </td>
+            <td class="tableitem">
+              <p class="itemtext">{{singleUserData.shavings_quantity}}</p>
+            </td>
+            <td class="tableitem Rate">
+              <p class="itemtext">{{singleUserData.shavings_price | currency}}</p>
+            </td>
+          </tr>
 
         <tr class="service">
           <td class="tableitem">

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../../environments/environment';
 import { DaysBetweenTwoDatesService } from '../../services/days-between-two-dates.service';
@@ -46,6 +46,10 @@ export class EditUserEventDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('keyup_hookup') keyup_hookup: ElementRef;
   @ViewChild('keyup_hookupfee') keyup_hookupfee: ElementRef;
 
+  @ViewChild('keyup_shavingsinput') keyup_shavingsinput: ElementRef;
+  @ViewChild('keyup_shavings') keyup_shavings: ElementRef;
+  @ViewChild('keyup_shavingsfee') keyup_shavingsfee: ElementRef;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -56,12 +60,13 @@ export class EditUserEventDetailsComponent implements OnInit, OnDestroy {
     private pfService: PostFormDataService,
   ) { }
 
-  /*
-  attachmentList: any = [];
-  url: any = '';
-  */
-
   ngOnInit() {
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+        return;
+      }
+      window.scrollTo(0, 0)
+    });
     this.id = this.route.snapshot.params['id'];
     this.getSingleUserDetails();
     
@@ -96,12 +101,13 @@ export class EditUserEventDetailsComponent implements OnInit, OnDestroy {
                 }
               }
               if (socketObject['stalls']) {
-                // current.singleUserData.userStalls = parseInt(socketObject['stalls']);
-
+                current.eventData.stalls = parseInt(socketObject['stalls'])+ parseInt(current.singleUserData.userStalls);
               }
               if (socketObject['electric_quantity']) {
-                // current.singleUserData.electric_quantity = parseInt(socketObject['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
-
+                current.eventData.electric_quantity = parseInt(socketObject['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
+              }
+              if (socketObject['shavings_quantity']) {
+                current.eventData.shavings_quantity = parseInt(socketObject['shavings_quantity']) + parseInt(current.singleUserData.shavings_quantity);
               }
             }
           },
@@ -195,6 +201,7 @@ export class EditUserEventDetailsComponent implements OnInit, OnDestroy {
         }
         current.eventData['stalls'] = parseInt(current.eventData['stalls']) + parseInt(current.singleUserData.userStalls);
         current.eventData['electric_quantity'] = parseInt(current.eventData['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
+        current.eventData['shavings_quantity'] = parseInt(current.eventData['shavings_quantity']) + parseInt(current.singleUserData.shavings_quantity);
 
         // current.singleUserData.userStalls = parseInt(current.eventData['stalls']) + parseInt(current.singleUserData.userStalls);
         //current.singleUserData.electric_quantity = parseInt(current.eventData['electric_quantity']) + parseInt(current.singleUserData.electric_quantity);
@@ -550,14 +557,19 @@ enterRaceclass(eid, uid, eventType, formType) {
 
   /*-- addons starts -- */
   validateustall(event, userStalls, stalls) {
+    console.log(this.singleUserData.userStalls);
     if (this.singleUserData.userStalls >= this.eventData.stalls) {
       var text = "Entry quantity should be lesser than available stalls quantity";
       alert(text);
       this.dataService.changeMessage(text);
       this.singleUserData.userStalls = 0;
       this.singleUserData.stalls_price = 0;
-    } else {
-      if (this.singleUserData.userStalls) {
+    }else if(this.singleUserData.userStalls == ''){
+      this.singleUserData.userStalls = 0;
+      this.singleUserData.stalls_price = 0;
+    } 
+    else {
+            if (this.singleUserData.userStalls) {
         this.singleUserData.stalls_price = this.singleUserData.userStalls * this.eventData.stalls_price;
       }
     }
@@ -583,11 +595,12 @@ enterRaceclass(eid, uid, eventType, formType) {
       this.dataService.changeMessage(text);
       this.singleUserData.electric_quantity = 0;
       this.singleUserData.electric_price = 0;
-    } else {
-      console.log(this.singleUserData.electric_quantity);
+    }else if(this.singleUserData.electric_quantity == ''){
+      this.singleUserData.electric_quantity = 0;
+      this.singleUserData.electric_price = 0;
+    }  
+    else {
       if (this.singleUserData.electric_quantity) {
-        console.log(e_quantity);
-        console.log(this.eventData.electric_price)
         this.singleUserData.electric_price = parseInt(this.singleUserData.electric_quantity) * parseInt(this.eventData.electric_price);
       }
     }
@@ -606,8 +619,28 @@ enterRaceclass(eid, uid, eventType, formType) {
     //   }
 
   }
+  validateshavingsquantity(event, ushavings_quantity, sh_quantity) {
 
 
+    if (Number(ushavings_quantity) >= Number(sh_quantity)) {
+      console.log(sh_quantity);
+      var text = "Entry quantity should be lesser than available shavings_quantity";
+      this.dataService.changeMessage(text);
+      this.singleUserData.shavings_quantity = 0;
+      this.singleUserData.shavings_price = 0;
+    }else if(this.singleUserData.shavings_quantity == ''){
+      this.singleUserData.shavings_quantity = 0;
+      this.singleUserData.shavings_price = 0;
+    }  else {
+      console.log(this.singleUserData.shavings_quantity);
+      if (this.singleUserData.shavings_quantity) {
+        this.singleUserData.shavings_price = parseInt(this.singleUserData.shavings_quantity) * parseInt(this.eventData.shavings_price);
+      }
+    }
+ 
+
+  }
+ 
   /*-- addons ends --*/
   edit_addons(eid, uid, eventType, formType) {
     this.eventType = eventType;
@@ -622,7 +655,19 @@ enterRaceclass(eid, uid, eventType, formType) {
     this.singleUserData.etimeslots.forEach(el => {
 
     });
+    var currentDate = Date.parse(new Date().toString());
 
+  
+    if (this.eventData.due_date < currentDate) {
+      this.singleUserData.late_fee = this.eventData.late_fee ?this.eventData.late_fee: 0;
+      this.alertMessage = {
+        type: 'info',
+        title: 'Late Fee of $'+this.eventData.late_fee+' Applies After Due Date ',
+        data: ''
+      };
+    } else {
+      this.singleUserData.late_fee = 0;
+    }
 
     //exhibitions
     var userEventEntry = this.singleUserData.etimeslots;
@@ -669,9 +714,9 @@ enterRaceclass(eid, uid, eventType, formType) {
     this.data.producer_id = this.singleUserData.producer_id;
     this.data.event_id = this.singleUserData.event_id._id;
     this.data.eventsignup_id = this.singleUserData._id;
-    console.log("----------------");
-    console.log(producerEventEntry);
-    console.log(userEventEntry);
+    // console.log("----------------");
+    // console.log(producerEventEntry);
+    // console.log(userEventEntry);
     this.data.producerEventData = this.eventData;
     this.data.userEventData = this.singleUserData;
 
@@ -691,7 +736,10 @@ enterRaceclass(eid, uid, eventType, formType) {
       user_event_electric_quantity: this.singleUserData.electric_quantity,
       electric_price: this.eventData.electric_price,
       user_event_electric_price: this.singleUserData.electric_price,
-
+      shavings_quantity: this.eventData.shavings_quantity - this.singleUserData.shavings_quantity,
+      user_event_shavings_quantity: this.singleUserData.shavings_quantity,
+      shavings_price: this.eventData.shavings_price,
+      user_event_shavings_price: this.singleUserData.shavings_price,
 
     });
 

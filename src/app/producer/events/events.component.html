@@ -23,7 +23,7 @@
                         </a>
                         <ul class="breadcrumb">
                             <li>
-                                <a href="index.html">
+                                <a href="/producer/dashboard">
                                     <i class="icon-home2 position-left"></i> Home</a>
                             </li>
                             <li class="active">Events</li>
@@ -50,17 +50,13 @@
                                 <div class="form-group col-md-6">
                                     <label for="inputEventName4">Event Name</label>
                                     <input type="text" class="form-control" id="inputEventName4" placeholder="Event Name" [(ngModel)]="event.event_name" name="event_name"
-                                        required minlength="2" pattern="[A-Za-z0-9 ]+$">
-                                    <div *ngIf="f.controls.event_name?.errors?.required && (f.controls.event_name.touched || f.controls.event_name.dirty)" class="error">
+                                        required  (keyup)="validateEventName()">
+                                    <div *ngIf=" f.controls.event_name?.errors?.required && (f.controls.event_name.touched || f.controls.event_name.dirty)" class="error">
                                         Name is required
                                     </div>
-                                    <div *ngIf="f.controls.event_name?.errors?.minlength  && (f.controls.event_name.touched || f.controls.event_name.dirty)"
-                                        class="error">
-                                        Event Name Too Small
-                                    </div>
-                                    <div *ngIf="f.controls.event_name?.errors?.pattern  && (f.controls.event_name.touched || f.controls.event_name.dirty)" class="error">
-                                        Event name must contain only alphabets and numbers
-                                    </div>
+                                
+                              
+                                  
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputVenueName4">Venue/Location Name</label>
@@ -76,6 +72,7 @@
                                         Event Location is invalid
                                     </div>
                                 </div>
+                                
                             </div>
 
                             <div class="form-row">
@@ -83,7 +80,7 @@
                                     <label for="inputCity">From Date</label>
                                     <div class="input-group">
                                         <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="event.from_date" name="from_date" ngbDatepicker
-                                            #d1="ngbDatepicker" required readonly (ngModelChange)="getValidateDate(event.from_date,event.to_date)">
+                                        firstDayOfWeek='0'  #d1="ngbDatepicker" required readonly (ngModelChange)="getValidateDate(event.from_date,event.to_date)">
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
                                                 <img src="../../../assets/images/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -101,7 +98,7 @@
                                     <label for="inputCity">To Date</label>
                                     <div class="input-group">
                                         <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="event.to_date" name="to_date" ngbDatepicker #d2="ngbDatepicker"
-                                            required readonly (ngModelChange)="getValidateDate(event.from_date,event.to_date)">
+                                        firstDayOfWeek='0'  required readonly (ngModelChange)="getValidateDate(event.from_date,event.to_date)">
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
                                                 <img src="../../../assets/images/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -170,6 +167,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <label for="inputEventName4">Your Website Link</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon3">https://racebox.com/products/</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="inputEventName4" pattern="https?://.+[a-zA-Z0-9/.]*"  placeholder="Website Link" [(ngModel)]="event.website_link"
+                                                name="website_link" >
+                                        </div>
+                                        <div *ngIf="f.controls.website_link?.errors?.pattern  && (f.controls.website_link.touched || f.controls.website_link.dirty)"
+                                            class="error">
+                                            website link is invalid
+                                        </div>
+                                    </div>
+                                </div>
                         </form>
                     </div>
                 </div>
@@ -206,8 +219,7 @@
                                 </div>
                             </div>
                             <button class="btn btn-success btn-sm" (click)="addSanction(sanction)" *ngIf="!f4.controls.sanction_name?.errors?.required && !f4.controls.sanction_name?.errors?.minlength">Add</button>
-                            &nbsp; &nbsp;
-                            <button class="btn btn-secondary btn-sm" type="reset">Reset</button>
+                            <!-- <button class="btn btn-secondary btn-sm" type="reset">Reset</button> -->
                         </form>
                         <br>
                         <br>
@@ -239,20 +251,21 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="inputEventName4">Type</label>
-                                        <input type="text" class="form-control" id="inputEventName4" placeholder="Race Class Type" [(ngModel)]="raceclass.type" name="event_raceclass_type"
-                                            required minlength="3" pattern="[0-9a-zA-Z $,:_]*">
+                                        <input type="text" class="form-control" id="inputEventName4" placeholder="Race Class Type" (keyup)="validateRaceClass()" [(ngModel)]="raceclass.type" name="event_raceclass_type"
+                                            required >
                                         <div *ngIf="f2.controls.event_raceclass_type?.errors?.required && (f2.controls.event_raceclass_type.touched || f2.controls.event_raceclass_type.dirty)"
                                             class="error">
-                                            Name is required
+                                            Race Class Name is required
                                         </div>
-                                        <div *ngIf="f2.controls.event_raceclass_type?.errors?.minlength  && (f2.controls.event_raceclass_type.touched || f2.controls.event_raceclass_type.dirty)"
+                                        
+                                        <!-- <div *ngIf="f2.controls.event_raceclass_type?.errors?.minlength  && (f2.controls.event_raceclass_type.touched || f2.controls.event_raceclass_type.dirty)"
                                             class="error">
-                                            Minimum of 10 characters
-                                        </div>
-                                        <div *ngIf="f2.controls.event_raceclass_type?.errors?.pattern  && (f2.controls.event_raceclass_type.touched || f2.controls.event_raceclass_type.dirty)"
+                                            Minimum of 2 characters
+                                        </div> -->
+                                        <!-- <div *ngIf="f2.controls.event_raceclass_type?.errors?.pattern  && (f2.controls.event_raceclass_type.touched || f2.controls.event_raceclass_type.dirty)"
                                             class="error">
                                             Race Class Name is invalid
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputVenueName4">Price</label>
@@ -273,8 +286,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="card-link btn btn-success btn-sm pull-right" (click)="addRaceClass(raceclass)" *ngIf="!f2.controls.event_raceclass_type?.errors?.required
-                   && !f2.controls.event_raceclass_type?.errors?.minlength && !f2.controls.price?.errors?.required">Add</button>
+                            <!-- {{raceclass.type?.length}} -->
+                            <button class="card-link btn btn-success btn-sm pull-right" (click)="addRaceClass(raceclass)" *ngIf="f2.valid && raceclass.type!=''">Add</button>
                             <!-- <button type="reset" class="card-link">Reset</button> -->
                         </form>
                         <br>
@@ -687,24 +700,7 @@
 
                                 </div>
                                 <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputCity">Due Date For Late Fee</label>
-                                        <div class="input-group">
-                                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="event.due_date" name="due_date" ngbDatepicker
-                                                #d3="ngbDatepicker" required readonly (ngModelChange)="getValidateDueDate(event?.from_date,event?.due_date)">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary" (click)="d3.toggle()" type="button">
-                                                    <img src="../../../assets/images/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div *ngIf="f5.controls.due_date?.errors?.required && (f5.controls.due_date.touched || f5.controls.due_date.dirty)" class="error">
-                                            Due Date is required
-                                        </div>
-                                        <div *ngIf="validateDueDate" class="error">
-                                            Due Date should be lesser than From Date
-                                        </div>
-                                    </div>
+                                   
                                     <div class="form-group col-md-6">
                                         <label for="inputCity">Registration Start/Bookings Open Date</label>
                                         <div class="input-group">
@@ -724,23 +720,26 @@
                                             Registration Date should be lesser than From Date and Greater than current Date
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="inputEventName4">Your Website Link</label>
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="basic-addon3">https://racebox.com/products/</span>
+                                            <label for="inputCity">Due Date For Late Fee</label>
+                                            <div class="input-group">
+                                                <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="event.due_date" name="due_date" ngbDatepicker
+                                                    #d3="ngbDatepicker" required readonly (ngModelChange)="getValidateDueDate(event?.from_date,event?.registration_start_date,event?.due_date)">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" (click)="d3.toggle()" type="button">
+                                                        <img src="../../../assets/images/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <input type="text" class="form-control" id="inputEventName4" placeholder="Website Link" [(ngModel)]="event.website_link"
-                                                name="website_link" pattern="[0-9a-zA-Z _]*">
+                                            <div *ngIf="f5.controls.due_date?.errors?.required && (f5.controls.due_date.touched || f5.controls.due_date.dirty)" class="error">
+                                                Due Date is required
+                                            </div>
+                                            <div *ngIf="validateDueDate" class="error">
+                                                Due Date should be lesser than From Date
+                                            </div>
                                         </div>
-                                        <div *ngIf="f.controls.website_link?.errors?.pattern  && (f.controls.website_link.touched || f.controls.website_link.dirty)"
-                                            class="error">
-                                            website link is invalid
-                                        </div>
-                                    </div>
                                 </div>
+                              
                             </form>
                         </div>
 
@@ -754,6 +753,13 @@
                 <br>
                 <button type="button" class="btn btn-primary pull-right" [disabled]="f.invalid || event.racetype.length==0" (click)="addEvent()">Add Event</button>
                 <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>     <br>
                 <br>
                 <br>
                 <br>

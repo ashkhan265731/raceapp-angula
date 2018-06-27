@@ -23,7 +23,7 @@
             </a>
             <ul class="breadcrumb">
               <li>
-                <a href="index.html">
+                <a routerLink="user/dashboard">
                   <i class="icon-home2 position-left"></i> Home</a>
               </li>
               <li class="active">Events List</li>
@@ -39,89 +39,187 @@
   <div class="container-fluid">
     <app-alert-message [alertMessage]="alertMessage"></app-alert-message>
 
-    <!-- <div class="row">
-      <div class="col-xs-12 col-sm-12">
-        <ul class="list-group">
-          <li class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center">
-            <a class="col-xs-12 col-sm-12 text-dark event-link-heading">
-              <span class="col-xs-3 col-sm-3 pull-left f-b  ">Event Date</span>
-              <span class="col-xs-3 col-sm-3 f-b"> Event Name</span>
-              <span class="col-xs-2 col-sm-2 pull-right  f-b ">Location</span>
-              <span class="col-xs-2 col-sm-2 pull-right  f-b ">Status</span>
-              <span class="col-xs-2 col-sm-2 pull-right  f-b ">Action</span>
-
-            </a>
-          </li>
-
-          <li class="list-group-item list-group-item-action list-group-item-light d-flex justify-content-between align-items-center"
-            *ngFor="let events of eventsListData;let i=index">
-         
-            <a class="col-xs-12 col-sm-12 event-link" *ngIf="events?.registered=='true'" [routerLink]="['/user/myeventdetails',events.myeventsid]">
-              <span class="col-xs-3 col-sm-3 pull-left  ">{{events.from_date | date: 'dd/MM/yyyy'}} - {{events.to_date | date: 'dd/MM/yyyy'}}</span>
-              <span class="col-xs-3 col-sm-3 f-b">{{events.event_name}} </span>
-              <span class="col-xs-2 col-sm-2 pull-right f-b ">{{events.location}}</span>
-              <span class="col-xs-2 col-sm-2 pull-right  right-0 f-b ">
-                <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>
-                <div *ngIf="events.from_date<currentDate && events.to_date<currentDate" class="e-event">Expired</div>
-                <div *ngIf="events.from_date>currentDate" class="u-event">Upcoming</div>
-              </span>
-              <span class="col-xs-2 col-sm-2 pull-right f-b"  *ngIf="events?.registered=='true'">View </span>
-
-            </a>
-
-            <a class="col-xs-12 col-sm-12 event-link" *ngIf="events?.registered!='true'"   [routerLink]="['/user/usereventsignup',events._id]">
-              <span class="col-xs-3 col-sm-3 pull-left  ">{{events.from_date | date: 'dd/MM/yyyy'}} - {{events.to_date | date: 'dd/MM/yyyy'}}</span>
-              <span class="col-xs-3 col-sm-3 f-b">{{events.event_name}} </span>
-              <span class="col-xs-2 col-sm-2 pull-right f-b ">{{events.location}}</span>
-              <span class="col-xs-2 col-sm-2 pull-right f-b right-0 ">
-                <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>
-                <div *ngIf="events.from_date<currentDate && events.to_date<currentDate" class="e-event">Expired</div>
-                <div *ngIf="events.from_date>currentDate" class="u-event">Upcoming</div>
-              </span>
-              <span class="col-xs-2 col-sm-2 pull-right f-b "  *ngIf="events?.registered!='true'">Register </span>
-
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div> -->
+    
     <div class="card p-2">
-          <div class="card-body row">
-   
-      <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 table-responsive">
+      <div class="card-body row">
+
+        <!-- <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 table-responsive">
           <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">Event Date</th>
-                  <th scope="col">Event Name</th>
-                  <th scope="col">Location</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let events of eventsListData;let i=index" 
-                [routerLink]="events?.registered=='true'?['/user/myeventdetails',events.myeventsid]: ['/user/usereventsignup',events._id]" class="cur-pointer">
-                   
-                  <td scope="row">{{events.from_date | date: 'dd/MM/yyyy'}} - {{events.to_date | date: 'dd/MM/yyyy'}}</td>
-                  <td>{{events.event_name}}</td>
-                  <td>{{events.location}}</td>
-                  <td>
-                    <span>
-                      <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>
-                      <div *ngIf="events.from_date<currentDate && events.to_date<currentDate" class="e-event">Expired</div>
-                      <div *ngIf="events.from_date>currentDate" class="u-event">Upcoming</div>
-                    </span>
-                  </td>
-                  <td *ngIf="events?.registered=='true'" > <span class="view-btn">View</span></td>
-                  <td *ngIf="events?.registered!='true'"><span class="register-btn">Register</span></td>
-                  <td *ngIf="events?.registration_start_date>=currentDate"> event  </td>
-               
-                </tr>
-            
-              </tbody>
-            </table>
+            <thead>
+              <tr>
+                <th scope="col">Event Date</th>
+                <th scope="col">Event Name</th>
+                <th scope="col">Location</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let events of eventsListData;let i=index" [routerLink]="events?.registered=='true'?['/user/myeventdetails',events.myeventsid]: ['/user/usereventsignup',events._id]"
+                class="cur-pointer">
+
+                <td scope="row">{{events.from_date | date: 'dd/MM/yyyy'}} - {{events.to_date | date: 'dd/MM/yyyy'}}</td>
+                <td>{{events.event_name}}</td>
+                <td>{{events.location}}</td>
+                <td>
+                  <span>
+                    <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>
+                    <div *ngIf="events.from_date<currentDate && events.to_date<currentDate" class="e-event">Expired</div>
+                    <div *ngIf="events.from_date>currentDate" class="u-event">Upcoming</div>
+                  </span>
+                </td>
+                <td *ngIf="events?.registered=='true'">
+                  <span class="view-btn">View</span>
+                </td>
+                <td *ngIf="events?.registered!='true'">
+                  <span class="register-btn">Register</span>
+                </td>
+
+              </tr>
+
+            </tbody>
+          </table>
+        </div> -->
+
+<div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <nav>
+              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home"
+                  aria-selected="true">On Going</a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile"
+                  aria-selected="false">Upcoming</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact"
+                  aria-selected="false">Expired</a>
+                  
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-md-12 col-sm-12 col-lg-12 table-responsive">
+            <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Event Date</th>
+                      <th scope="col">Event Name</th>
+                      <th scope="col">Location</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let events of ongoingEvents;let i=index"  [routerLink]="events?.registered=='true'?['/user/myeventdetails',events.myeventsid]: ['/user/usereventsignup',events._id]"
+                      class="cur-pointer">
+      
+                      <td scope="row">{{events.from_date | date: 'dd/MM/yyyy'}} - {{events.to_date | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{events.event_name}}</td>
+                      <td>{{events.location}}</td>
+                      <td>
+                        <span>
+                          <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>
+                          <div *ngIf="events.from_date<currentDate && events.to_date<currentDate" class="e-event">Expired</div>
+                          <div *ngIf="events.from_date>currentDate" class="u-event">Upcoming</div>
+                        </span>
+                      </td>
+                      <td *ngIf="events?.registered=='true'">
+                        <span class="view-btn">View</span>
+                      </td>
+                      <td *ngIf="events?.registered!='true'">
+                        <span class="register-btn">Register</span>
+                      </td>
+                      <!-- <td *ngIf="events?.registration_start_date>=currentDate"> event  </td> -->
+      
+                    </tr>
+      
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Event Date</th>
+                      <th scope="col">Event Name</th>
+                      <th scope="col">Location</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let events of upcomingEvents;let i=index"  [routerLink]="events?.registered=='true'?['/user/myeventdetails',events.myeventsid]: ['/user/usereventsignup',events._id]"
+                      class="cur-pointer">
+      
+                      <td scope="row">{{events.from_date | date: 'dd/MM/yyyy'}} - {{events.to_date | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{events.event_name}}</td>
+                      <td>{{events.location}}</td>
+                      <td>
+                        <span>
+                          <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>
+                          <div *ngIf="events.from_date<currentDate && events.to_date<currentDate" class="e-event">Expired</div>
+                          <div *ngIf="events.from_date>currentDate" class="u-event">Upcoming</div>
+                        </span>
+                      </td>
+                      <td *ngIf="events?.registered=='true'">
+                        <span class="view-btn">View</span>
+                      </td>
+                      <td *ngIf="events?.registered!='true'">
+                        <span class="register-btn">Register</span>
+                      </td>
+                      <!-- <td *ngIf="events?.registration_start_date>=currentDate"> event  </td> -->
+      
+                    </tr>
+      
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Event Date</th>
+                      <th scope="col">Event Name</th>
+                      <th scope="col">Location</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let events of expiredEvents;let i=index"  [routerLink]="events?.registered=='true'?['/user/myeventdetails',events.myeventsid]: ['/user/usereventsignup',events._id]"
+                      class="cur-pointer">
+      
+                      <td scope="row">{{events.from_date | date: 'dd/MM/yyyy'}} - {{events.to_date | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{events.event_name}}</td>
+                      <td>{{events.location}}</td>
+                      <td>
+                        <span>
+                          <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>
+                          <div *ngIf="events.from_date<currentDate && events.to_date<currentDate" class="e-event">Expired</div>
+                          <div *ngIf="events.from_date>currentDate" class="u-event">Upcoming</div>
+                        </span>
+                      </td>
+                      <td *ngIf="events?.registered=='true'">
+                        <span class="view-btn">View</span>
+                      </td>
+                      <td *ngIf="events?.registered!='true'">
+                        <span class="register-btn">Register</span>
+                      </td>
+                      <!-- <td *ngIf="events?.registration_start_date>=currentDate"> event  </td> -->
+      
+                    </tr>
+      
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
       </div>
     </div>
-    </div>
-</div>
+  </div>

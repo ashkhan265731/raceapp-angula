@@ -33,15 +33,15 @@ export class ProfileEditComponent implements OnInit {
   alertMessage: any = null;
 
   states = [
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
-    'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-    'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-    'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico',
-    'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
-    'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+    'alabama', 'alaska', 'arizona', 'arkansas', 'california', 'colorado', 'connecticut', 'delaware',
+    'florida', 'georgia', 'hawaii', 'idaho', 'illinois', 'indiana', 'iowa', 'kansas', 'kentucky',
+    'louisiana', 'maine', 'maryland', 'massachusetts', 'michigan', 'minnesota', 'mississippi',
+    'missouri', 'montana', 'nebraska', 'nevada', 'new hampshire', 'new jersey', 'new mexico',
+    'new york', 'north carolina', 'north dakota', 'ohio', 'oklahoma', 'oregon', 'pennsylvania',
+    'rhode Island', 'south carolina', 'south dakota', 'tennessee', 'texas', 'utah', 'vermont',
+    'virginia', 'washington', 'west virginia', 'wisconsin', 'wyoming'
   ];
-  selected = "Minnesota";
+  selected = "minnesota";
   @ViewChild('phone1') phone1: ElementRef;
   @ViewChild('phone2') phone2: ElementRef;
   @ViewChild('phone3') phone3: ElementRef;
@@ -131,7 +131,17 @@ export class ProfileEditComponent implements OnInit {
         }
 
       }
-    }}
+    }
+    if (this.ph1 && this.ph2 && this.ph3) {
+      var validatePhone = parseInt(this.ph1.length) + parseInt(this.ph2.length) + parseInt(this.ph3.length);
+      console.log(validatePhone);
+      if (validatePhone == 10) {
+        this.validatePhoneumber = false;
+      } else {
+        this.validatePhoneumber = true;
+      }
+    }
+  }
 
   update(model: any) {
     var current = this;

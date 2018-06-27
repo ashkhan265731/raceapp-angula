@@ -1,14 +1,24 @@
-caption{
+caption {
     caption-side: top;
     color: #373d43;
     font-weight: bold;
 }
 
+.select-span {
+    position: absolute;
+    top: 36px;
+    margin-left: 10px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    pointer-events: none 
+}
 
-.hide{
+.hide {
     display: none;
 }
-.navi{
+
+.navi {
     font-size: 25px;
     /* float: left; */
     margin-top: -2px;
@@ -18,9 +28,23 @@ caption{
     text-align: center;
     vertical-align: middle;
 }
-.swatch-pink{
-    margin-top: 36px;
+
+.b-heading {
+    font-weight: bold;
 }
+
+.btn.swatch-pink {
+    margin-top: 36px;
+    color: #fff;
+    background-color: #e83e8c;
+}
+
 tr:last-child {
     border-bottom: 1px solid #e9ecef;
+}
+
+.time-span {
+    margin: 0px 18px;
+    font-weight: bold;
+    color: #000;
 }

@@ -85,6 +85,9 @@
     height: 56px;
   } */
   /* round card */
+  .card{
+    margin-bottom: 10px;
+  }
   .card-title {
     margin: 0;
     color: #3c4858;
@@ -127,4 +130,9 @@
 }
 .view-link :hover{
   text-decoration: underline;
+}
+.category{
+  position: relative;
+    bottom: 5px;
+    /* font-weight: bold; */
 }

@@ -46,7 +46,7 @@
         <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
             <div class="picture-container">
                 <div class="picture">
-                  
+                  {{userData.user_picture}}
                   <img class="img-cls" alt="..." src="../../../assets/images/profile_noimage.png" *ngIf="!userData.user_picture">
                   <img class="img-cls" [src]="serviceUrl+'/'+'profile_pics/'+userData.user_picture" *ngIf="userData.user_picture" />
                 </div>
@@ -92,14 +92,26 @@
                             <input class="form-control" id="inputEventName4" #email placeholder="Email" name="email" [(ngModel)]="userData.email" 
                           required data-grouplength="3,3,4">
                              </div>
-                             <div class="form-group col-md-6 phone-field">
+                            </div>
+
+                            <div class="form-row">
+                             <div class="form-group col-md-12 phone-field">
                                 <label for="inputEventName4 phone-label">Phone</label>
                                 <!-- <input class="form-control" id="inputEventName4" placeholder="Phone" name="phone" [(ngModel)]="userData.phone"  required> -->
-                                <input class="form-control" id="inputEventName4" placeholder="Phone" name="ph1" [(ngModel)]="ph1" #phone1 required (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="3"><span><i class="material-icons">minimize</i></span>
-                                <input class="form-control" id="inputEventName4" placeholder="" name="ph2" [(ngModel)]="ph2" #phone2 required (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="3"><span><i class="material-icons">minimize</i></span>
-                                <input class="form-control" id="inputEventName4" placeholder="" name="ph3" [(ngModel)]="ph3" #phone3 required (keyup)="validatePhone()" required pattern="[0-9]*" maxlength="4">
+                                <input class="form-control" id="inputEventName4" placeholder="XXX" name="ph1" [(ngModel)]="ph1" #phone1 required (keyup)="validatePhone()"
+                                  required pattern="[0-9]{3}" maxlength="3">
+                                <span>
+                                  <i class="material-icons">minimize</i>
+                                </span>
+                                <input class="form-control" id="inputEventName4" placeholder="XXX" name="ph2" [(ngModel)]="ph2" #phone2 required (keyup)="validatePhone()"
+                                  required pattern="[0-9]{3}" maxlength="3">
+                                <span>
+                                  <i class="material-icons">minimize</i>
+                                </span>
+                                <input class="form-control" id="inputEventName4" placeholder="XXXX" name="ph3" [(ngModel)]="ph3" #phone3 required (keyup)="validatePhone()"
+                                  required pattern="[0-9]{4}" maxlength="4">
                                 <div class="error" *ngIf="validatePhoneumber">Invalid Phone Number</div>
-
+          
                             </div>
                             </div> 
                             <div class="form-row">
@@ -123,7 +135,7 @@
                                 <label for="inputState">State</label>
                                 <select id="inputState" class="form-control"   [(ngModel)]="userData.state"  [(value)]="selected" name="state" required>
                                   <option selected>Choose...</option>
-                                  <option *ngFor="let state of states">{{state}}</option>
+                                  <option class="capitalize" *ngFor="let state of states">{{state}}</option>
                                 </select>
                                
                               </div>
@@ -131,7 +143,7 @@
                                 <label for="inputEventName4">Zipcode</label>
                                 <input class="form-control" id="inputEventName4" #zipcode maxlength="5" name="zipcode"  [(ngModel)]="userData.zipcode" placeholder="Postal Code" pattern="[0-9]{5}"
                                 required>
-                              <span align="end">{{zipcode.value.length}} / 5</span>
+                              <!-- <span align="end">{{zipcode.value.length}} / 5</span> -->
                               </div>
                             </div>
                       

@@ -17,7 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { SharedModule } from './../shared/shared.module';
-
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 @NgModule({
   imports: [
     CommonModule,
@@ -26,7 +26,8 @@ import { SharedModule } from './../shared/shared.module';
     NgbModule,
     UserRoutingModule,
     FileUploadModule,
-    SharedModule
+    SharedModule,
+    NgMultiSelectDropDownModule.forRoot(),
   ],
   declarations: [
     DashboardComponent, 

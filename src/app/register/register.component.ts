@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
   selectedTab = 0;
   verifyEmail: any = false;
   validatePhoneumber: any = false;
+  filename: any = '';
 
   states = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
@@ -47,6 +48,7 @@ export class RegisterComponent implements OnInit {
 
   validatePhone() {
     if (this.user.phone1) {
+
       if (this.user.phone1 && this.user.phone1.toString().length > 2) {
         this.phone2.nativeElement.focus();
 
@@ -64,14 +66,15 @@ export class RegisterComponent implements OnInit {
         }
 
       }
-      //   if (this.user.phone1 && this.user.phone2 && this.user.phone3) {
-      //   var validatePhone = this.user.phone1.toString().length + this.user.phone2.toString().length + this.user.phone3.toString().length;
-      //   if (validatePhone < 10) {
-      //     this.validatePhoneumber = true;
-      //   } else {
-      //     this.validatePhoneumber = true;
-      //   }
-      // }
+      if (this.user.phone1 && this.user.phone2 && this.user.phone3) {
+        var validatePhone = parseInt(this.user.phone1.length) + parseInt(this.user.phone2.length) + parseInt(this.user.phone3.length);
+        console.log(validatePhone);
+        if (validatePhone == 10) {
+          this.validatePhoneumber = false;
+        } else {
+          this.validatePhoneumber = true;
+        }
+      }
     }
 
 
@@ -96,10 +99,11 @@ export class RegisterComponent implements OnInit {
 
   fileChangeEvent(fileInput: any) {
     this.filesToUpload = <Array<File>>fileInput.target.files;
+    this.filename = this.filesToUpload[0].name;
   }
 
   register() {
-    this.user.phone = this.user.phone1+""+this.user.phone2+""+this.user.phone3;
+    this.user.phone = this.user.phone1 + "" + this.user.phone2 + "" + this.user.phone3;
     this.user = JSON.stringify(this.user);
     console.log(this.user);
     const formData: any = new FormData();
@@ -114,21 +118,27 @@ export class RegisterComponent implements OnInit {
     //formData.append("uploads[]", files[0], files[0]['name']);
     formData.append("user", this.user)
     var response = this.http.post(this.serviceUrl + "/registeruser", formData)
-      .subscribe(function (res) {
+      .subscribe( (res)=> {
         console.log(response);
-        return res;
+        //return res;
+        this.alertService.success('Registered successfully ', true);
+        setTimeout(() => {
+          this.router.navigate(["login"]);
+        }, 5000);
       }, function (err) {
-        console.log(err)
+        console.log(err);
+        this.alertService.error('Something went wrong, Please Contact the administrator !!', true);
       });
 
     if (response) {
-      this.user = {};
-      this.router.navigate(["login"]);
+      //this.user = {};
+      this.router.navigate(["reg-confirmation"]);
       //location.reload();
-      this.alertService.success('Registered successfully ', true);
+      //alert("Registerd successfully");
+
     }
     else {
-      this.alertService.error('Something went wrong, Please Contact the administrator !!', true);
+
     }
   }
 }

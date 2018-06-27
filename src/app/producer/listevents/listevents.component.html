@@ -111,14 +111,16 @@
                     <td>{{events.event_name}}</td>
                     <td>{{events.from_date | date: 'dd/MM/yyyy'}}-{{events.to_date | date: 'dd/MM/yyyy'}}</td>
                     <td>
-                      <a [routerLink]="['/producer/event_details',events._id]" class="link-btn">View More</a>
+                      <a [routerLink]="['/producer/event_details',events?._id]" class="link-btn">View More</a>
                     </td>
                     <td>
-                      <a [routerLink]="['/producer/registeredusers-details',events._id]" class="link-btn">View More</a>
+                      <a [routerLink]="['/producer/registeredusers-details',events?._id]" class="link-btn">View More</a>
                     </td>
                     <td>
-                      <a *ngIf="events.from_date>currentDate" [routerLink]="['/producer/addguestuser',events._id]" class="link-btn cursor_pointer">Signup Guest</a>
-                      <a *ngIf="events.from_date<currentDate" class="cursor" style="text-decoration: line-through;">Signup Guest</a>
+                      <a *ngIf="events.from_date>currentDate && events?.producer_id==sessionid" [routerLink]="['/producer/addguestuser',events?._id]" class="link-btn cursor_pointer">Signup Guest</a>
+                      <a *ngIf="events.from_date<currentDate " class="cursor" style="text-decoration: line-through;">Signup Guest</a>
+                        <a *ngIf="events?.producer_id!=sessionid" class="cursor" style="text-decoration: line-through;">Signup Guest</a>
+
                     </td>
                     <td>
                       <div *ngIf="events.from_date<currentDate && events.to_date>currentDate" class="on-event">On Going</div>

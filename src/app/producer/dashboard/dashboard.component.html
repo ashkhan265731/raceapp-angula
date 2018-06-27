@@ -47,11 +47,11 @@
       </div>
 </div>
 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-    <div class="card" >
+    <!-- <div class="card" >
         <div class="card-body">
            
         </div>
-      </div>
+      </div> -->
 </div>
   </div>
 </div>
@@ -111,9 +111,9 @@
               <div class="card">
                   <div class="card-header" >
                       <i class="material-icons" data-background-color="orange">event</i>
+                      <span class="category">Total Events</span>
                   </div>
                   <div class="card-content">
-                      <p class="category">Total Events</p>
                       <h3 class="card-title">{{countData.event_total | json}}</h3>
                   </div>
                  
@@ -123,9 +123,10 @@
               <div class="card">
                   <div class="card-header" >
                       <i class="material-icons" data-background-color="red"> person</i>
+                      <span class="category">Total Users</span>
                   </div>
                   <div class="card-content">
-                      <p class="category">Total Users</p>
+                      
                       <h3 class="card-title">{{countData.user_total | json}}</h3>
                   </div>
                  
@@ -135,9 +136,10 @@
               <div class="card">
                   <div class="card-header" >
                       <i class="material-icons" data-background-color="green">equalizer</i>
+                      <span class="category">Total signedup users for events</span>
+
                   </div>
                   <div class="card-content">
-                      <p class="category">Total signedup users for events</p>
                       <h3 class="card-title">{{countData.evententries_total}}</h3>
                   </div>
               
@@ -147,9 +149,9 @@
               <div class="card ">
                   <div class="card-header" >
                       <i class="material-icons" data-background-color="blue">supervisor_account</i>
-                  </div>
+                      <span class="category">Total Producers</span>
+                    </div>
                   <div class="card-content">
-                      <p class="category">Total Producers</p>
                       <h3 class="card-title">{{countData.producer_total | json}}</h3>
                   </div>
                 

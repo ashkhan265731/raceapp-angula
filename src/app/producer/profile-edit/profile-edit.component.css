@@ -33,7 +33,8 @@
 
 .phone-field input{
     display: inline;
-    width: 17%;
+    width: 64px;
+    text-align: center;
   }
   .phone-field label{
       display: block !important;

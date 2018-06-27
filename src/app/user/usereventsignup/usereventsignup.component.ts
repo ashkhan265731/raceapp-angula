@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from "rxjs/Rx";
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params, NavigationEnd } from '@angular/router';
 import { FormControl, FormGroup, FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 import { FileUpload } from 'ng2-fileupload';
@@ -10,6 +10,7 @@ import { PostFormDataService } from './../../services/post-form-data.service';
 import { environment } from './../../../environments/environment';
 // import { DialogBoxComponent } from '../dialog-box/dialog-box.component';
 import { DataService } from './../../services/data.service';
+import { SocketIoService } from '../../services/socket-io.service';
 
 @Component({
   selector: 'app-usereventsignup',
@@ -37,6 +38,8 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
   @ViewChild('keyup_hookupinput') keyup_shavingsinput: ElementRef;
   @ViewChild('keyup_hookup') keyup_shavings: ElementRef;
   @ViewChild('keyup_hookupfee') keyup_shavingsfee: ElementRef;
+ 
+  connection: any;
 
   race_document: any;
   validate_addrider: any = false;
@@ -50,7 +53,7 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
 
   @Input('group')
   public options: FormGroup;
-  ridetype: any;
+  ridetype: any = '';
   singleEventData: any = {};
   racetype: any = {};
   racetypeList: any = [];
@@ -83,6 +86,7 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private pfService: PostFormDataService,
     private dataService: DataService,
+    private socketIoService: SocketIoService,
   ) {
 
     this.uploader.onAfterAddingFile = (file: any) => { file.withCredentials = false; };
@@ -105,6 +109,12 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+      this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+        return;
+      }
+      window.scrollTo(0, 0)
+    });
     this.uploader.onAfterAddingFile = (file: any) => { file.withCredentials = false; };
     var sessionvar = JSON.parse(sessionStorage.getItem('user'));
     this.user_id = sessionvar['_id'];
@@ -112,6 +122,67 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
     this.getSingleEvent(this.eventId);
     this.getUserDetails();
     this.cdref.detectChanges();
+       /*This code will call socket io service and update sigleEventData */
+      //  this.connection = this.socketIoService.getMessages().subscribe(message => {
+      //   console.log('Message from socket -->');
+      //   console.log(message);
+      //   var data = JSON.parse(JSON.stringify(message));
+      //   if (data._id == this.eventId) {
+      //     this.singleEventData = JSON.stringify(message);
+      //   }
+      // });
+      var current = this;
+      var socketObject = {};
+      this.connection = this.socketIoService.getMessages().subscribe(message => {
+  
+        //http
+        if (current.singleEventData._id) {
+          current.http.get(current.serviceUrl + "/geteventdetails/" + current.singleEventData._id).
+            subscribe((response) => {
+              console.log(response);
+              console.log(typeof response);
+              socketObject = response;
+              console.log(typeof socketObject);
+  
+  
+              if (socketObject['_id'] == current.singleEventData._id) {
+                if (socketObject['etimeslot']) {
+                  for (var i = 0; i < socketObject['etimeslot'].length; i++) {
+                    console.log(parseInt(socketObject['etimeslot'][i].exhibitions_quantity));
+                    current.singleEventData.etimeslot[i].exhibitions_quantity = parseInt(socketObject['etimeslot'][i].exhibitions_quantity) ;
+                    console.log(current.singleEventData.etimeslot[i].exhibitions_quantity);
+                  }
+                }
+  
+                if (socketObject['wtimeslot']) {
+                  for (var i = 0; i < socketObject['wtimeslot'].length; i++) {
+                    console.log(parseInt(socketObject['wtimeslot'][i].warmup_quantity));
+                    current.singleEventData.wtimeslot[i].warmup_quantity = parseInt(socketObject['wtimeslot'][i].warmup_quantity);
+                    console.log(current.singleEventData.wtimeslot[i].warmup_quantity);
+                  }
+                }
+                if (socketObject['stalls']) {
+                  current.singleEventData.stalls = parseInt(socketObject['stalls']);
+                }
+                if (socketObject['electric_quantity']) {
+                  current.singleEventData.electric_quantity = parseInt(socketObject['electric_quantity']) ;
+                }
+                if (socketObject['shavings_quantity']) {
+                  current.singleEventData.shavings_quantity = parseInt(socketObject['shavings_quantity']) ;
+                }
+              }
+            },
+            function (err) {
+              current.errorLog = true;
+              current.alertMessage = {
+                type: 'danger',
+                title: 'Something Went wrong. Please Contact Administartor',
+                data: err
+              }; }
+          )
+        }
+      })
+  
   }
 
   getUserDetails() {
@@ -173,6 +244,7 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     console.log(this.isEventformSubmited);
+    this.connection.unsubscribe();
     if (this.isEventformSubmited != true) {
       var data = "";
       data = JSON.stringify(this.racetypeList);
@@ -215,16 +287,32 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
     current.eventSignUpData.office_fee = current.singleEventData.office_fee ? current.singleEventData.office_fee : 0;
     current.eventSignUpData.late_fee = current.singleEventData.late_fee ? current.singleEventData.late_fee : 0;
     var currentDate = Date.parse(new Date().toString());
+    console.log(currentDate);
+    console.log("----------------------");
+    console.log(current.singleEventData.due_date);
+    console.log(current.singleEventData.late_fee);
 
     console.log('Current Date :'+ currentDate + ' due_date ' +current.singleEventData.due_date);
     console.log('Current Date :'+ currentDate + ' due_date ' +current.singleEventData.due_date);
 
-    if(current.singleEventData.due_date > currentDate){
+    if(current.singleEventData.due_date < currentDate){
       current.eventSignUpData.late_fee = current.singleEventData.late_fee ? current.singleEventData.late_fee : 0;
+      console.log("in if");
+      console.log(current.eventSignUpData.late_fee);
     }else{
+      console.log("in else");
+
       current.eventSignUpData.late_fee = 0;
     }
   }
+
+validateSanction(){
+  this.singleEventData.sanctions.forEach((el,i) => {
+  if(el.sanction_value==' '){
+    el.sanction_value = el.sanction_value.replace(" ","");
+  }
+});
+}
 
   eventSignUp() {
 
@@ -265,14 +353,13 @@ export class UsereventsignupComponent implements OnInit, OnDestroy {
 
     this.eventSignUpData.electric_quantity = this.eventSignUpData.electric_quantity ? this.eventSignUpData.electric_quantity : '0';
     this.eventSignUpData.userStalls = this.eventSignUpData.userStalls ? this.eventSignUpData.userStalls : '0';
+    this.eventSignUpData.shavings_quantity = this.eventSignUpData.shavings_quantity ? this.eventSignUpData.shavings_quantity : '0';
 
-    console.log('Current Date :'+ currentDate + ' due_date ' +current.eventSignUpData.due_date);
-    console.log('Current Date :'+ currentDate + ' due_date ' +current.eventSignUpData.due_date);
-
-    if(current.singleEventData.due_date > currentDate){
-      current.eventSignUpData.late_fee = current.singleEventData.late_fee ? current.singleEventData.late_fee : 0;
+    
+    if(this.singleEventData.due_date < currentDate){
+      this.eventSignUpData.late_fee = this.singleEventData.late_fee ? this.singleEventData.late_fee : 0;
     }else{
-      current.eventSignUpData.late_fee = 0;
+      this.eventSignUpData.late_fee = 0;
     }
     var data = JSON.stringify(this.eventSignUpData);
 
